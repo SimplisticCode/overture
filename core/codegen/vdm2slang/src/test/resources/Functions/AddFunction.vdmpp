@@ -1,0 +1,10 @@
+functions
+
+f : nat -> nat
+f (x)== x + 1;
+
+operations
+
+Run : () ==> ?
+Run () ==
+	return f(2);

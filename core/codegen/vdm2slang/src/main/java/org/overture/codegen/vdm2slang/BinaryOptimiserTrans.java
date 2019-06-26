@@ -8,11 +8,11 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 import java.util.function.IntBinaryOperator;
 
-public class AdditionOptimiserTrans extends DepthFirstAnalysisAdaptor
+public class BinaryOptimiserTrans extends DepthFirstAnalysisAdaptor
 {
 	private TransAssistantIR assist;
 
-	public AdditionOptimiserTrans(TransAssistantIR assist)
+	public BinaryOptimiserTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
@@ -25,8 +25,6 @@ public class AdditionOptimiserTrans extends DepthFirstAnalysisAdaptor
 
 		BinaryExpressionHandle(node, plusOperation);
 	}
-
-
 
 	@Override public void caseASubtractNumericBinaryExpIR(
 			ASubtractNumericBinaryExpIR node) throws AnalysisException

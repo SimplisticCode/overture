@@ -30,7 +30,7 @@ public class SlangGen extends CodeGenBase
 
 		List<GeneratedModule> genModules = new LinkedList<>();
 
-		AdditionOptimiserTrans addTrans = new AdditionOptimiserTrans(transAssistant);
+		BinaryOptimiserTrans addTrans = new BinaryOptimiserTrans(transAssistant);
 
 		for (IRStatus<PIR> status : statuses)
 		{
