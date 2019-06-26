@@ -138,7 +138,7 @@ http://mojo.codehaus.org/versions-maven-plugin/
 						<exclude>**/org/overture/ast/statements/**/*.*</exclude>
 						<exclude>**/org/overture/ast/types/**/*.*</exclude>
 
-						<!-- ir AST -->
+						<!-- SlangTemplates.ir AST -->
 						<exclude>**/org/overture/codegen/ir/**/*</exclude>
 
 						<!-- Overture IDE - it has currently no tests -->

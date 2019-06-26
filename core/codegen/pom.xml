@@ -30,6 +30,7 @@
     <module>codegen-maven-plugin</module>
     <module>isagen</module>
     <module>vdm2python</module>
+    <module>vdm2slang</module>
   </modules>
   
 </project>
