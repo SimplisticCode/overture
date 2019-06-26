@@ -27,7 +27,7 @@ public class Math_TransformationTest
 
 	@Test public void additionOptimisation() throws AnalysisException
 	{
-		File file = new File("src/test/resources/AdditionOptimisation.vdmpp");
+		File file = new File("src/test/resources/BinaryMath/AdditionOptimisation.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -40,7 +40,7 @@ public class Math_TransformationTest
 
 	@Test public void subtractOptimisation() throws AnalysisException
 	{
-		File file = new File("src/test/resources/SubtractOptimisation.vdmpp");
+		File file = new File("src/test/resources/BinaryMath/SubtractOptimisation.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -54,13 +54,52 @@ public class Math_TransformationTest
 
 	@Test public void divideOptimisation() throws AnalysisException
 	{
-		File file = new File("src/test/resources/DivideOptimisation.vdmpp");
+		File file = new File("src/test/resources/BinaryMath/DivideOptimisation.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
 		assertSingleClass(classes);
 
 		String expectedCode = "val x : Z = 10\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void modulusOptimisation() throws AnalysisException
+	{
+		File file = new File("src/test/resources/BinaryMath/ModulusOptimisation.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "val x : Z = 7\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void integerDivisionOptimisation() throws AnalysisException
+	{
+		File file = new File("src/test/resources/BinaryMath/DivOptimisation.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "val x : Z = 5\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void multiplicationOptimisation() throws AnalysisException
+	{
+		File file = new File("src/test/resources/BinaryMath/MultiplicationOptimisation.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "val x : Z = 60\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
