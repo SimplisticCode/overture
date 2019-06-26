@@ -21,6 +21,12 @@ public class SlangFormat
 		this.codeEmitter = new MergeVisitor(new TemplateManager(root), callables);
 	}
 
+
+	public String findModifier(INode node) throws AnalysisException
+	{
+		return "val";
+	}
+
 	public String format(INode node) throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();

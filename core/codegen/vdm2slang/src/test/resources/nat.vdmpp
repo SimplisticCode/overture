@@ -1,6 +1,2 @@
-class A
-
 values
 x : nat = 5;
-
-end A

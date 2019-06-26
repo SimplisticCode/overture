@@ -1,5 +1,2 @@
-class A
 values
 i_am_boolean : bool = true;
-
-end A

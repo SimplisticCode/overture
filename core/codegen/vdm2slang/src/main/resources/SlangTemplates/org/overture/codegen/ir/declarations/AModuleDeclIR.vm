@@ -1,4 +1,3 @@
 #foreach( $decl in $node.Decls )
-    $SlangFormat.format($decl)
-
+#**#$SlangFormat.format($decl)
 #end

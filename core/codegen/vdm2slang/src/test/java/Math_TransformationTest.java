@@ -2,39 +2,65 @@ import junit.framework.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
+import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2slang.SlangGen;
 import org.overture.config.Release;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
-import org.overture.codegen.vdm2slang.SlangGen;
 
 import java.io.File;
 import java.util.List;
 
-public class SlangGenTest
+public class Math_TransformationTest
 {
 
 	@BeforeAll public static void initTesting()
 	{
-		Settings.dialect = Dialect.VDM_PP;
+		Settings.dialect = Dialect.VDM_SL;
 		Settings.release = Release.VDM_10;
 	}
 
-
-	@Test public void emptyClass() throws AnalysisException
+	@Test public void additionOptimisation() throws AnalysisException
 	{
-		File file = new File("src/test/resources/EmptyClass.vdmpp");
+		File file = new File("src/test/resources/AdditionOptimisation.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
 		assertSingleClass(classes);
 
-		String expectedCode = "class A:\n  pass\n";
+		String expectedCode = "val x : Z = 42\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void subtractOptimisation() throws AnalysisException
+	{
+		File file = new File("src/test/resources/SubtractOptimisation.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "val x : Z = 10\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+
+	@Test public void divideOptimisation() throws AnalysisException
+	{
+		File file = new File("src/test/resources/DivideOptimisation.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "val x : Z = 10\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
@@ -44,23 +70,10 @@ public class SlangGenTest
 		Assert.assertEquals("Got unexpected code", expectedCode, actualCode);
 	}
 
-	@Test public void classSingleField() throws AnalysisException
-	{
-		File file = new File("src/test/resources/nat.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		assertSingleClass(classes);
-
-		String expectedCode = "class A:\n  x = 5\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
 	private List<GeneratedModule> generateModules(File file)
 			throws AnalysisException
 	{
-		TypeCheckerUtil.TypeCheckResult<List<SClassDefinition>> tcResult = TypeCheckerUtil.typeCheckPp(file);
+		TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
 
 		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
 		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());

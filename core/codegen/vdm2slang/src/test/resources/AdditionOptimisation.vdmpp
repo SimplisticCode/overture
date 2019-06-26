@@ -1,6 +1,2 @@
-class A
-
 values
 x : nat = 15 + 27;
-
-end A

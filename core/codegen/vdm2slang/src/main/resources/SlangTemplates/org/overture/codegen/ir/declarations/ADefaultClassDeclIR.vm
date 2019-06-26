@@ -1,9 +1,5 @@
 ## TODO: handle 'functions', 'operations' and 'traces'
-class $node.getName():
-#if ( $node.getFields().isEmpty() )
-    pass
-#else
+//$node.getName():
 #**##foreach( $f in $node.getFields() )
-#**#  $SlangFormat.format($f)
+#**#$SlangFormat.format($f)
 #**##end
-#end

@@ -1,0 +1,3 @@
+values
+x : nat = 5;
+y : bool = false;

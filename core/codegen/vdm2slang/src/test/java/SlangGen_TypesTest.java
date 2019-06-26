@@ -22,7 +22,7 @@ public class SlangGen_TypesTest
 
 	@BeforeAll public static void initTesting()
 	{
-		Settings.dialect = Dialect.VDM_PP;
+		Settings.dialect = Dialect.VDM_SL;
 		Settings.release = Release.VDM_10;
 	}
 
@@ -33,33 +33,40 @@ public class SlangGen_TypesTest
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "class A:\n  val i_am_boolean : B = true\n";
+		String expectedCode = "val i_am_boolean : B = true\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
 
-
-
-	@Test public void integerType() throws AnalysisException
+	@Test public void integerType_nat() throws AnalysisException
 	{
-		File file = new File("src/test/resources/ClassSingleValue.vdmpp");
+		File file = new File("src/test/resources/nat.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "class A:\n  val x : Z = 5\n";
+		String expectedCode = "val x : Z = 5\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void additionOptimisation() throws AnalysisException
+	@Test public void integerType_nat1() throws AnalysisException
 	{
-		File file = new File("src/test/resources/AdditionOptimisation.vdmpp");
+		File file = new File("src/test/resources/nat1.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		assertSingleClass(classes);
+		String expectedCode = "val x : Z = 5\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
 
-		String expectedCode = "class A:\n  val x : Z = 42\n";
+	@Test public void combinedTypes() throws AnalysisException
+	{
+		File file = new File("src/test/resources/combinedTypes.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "val x : Z = 5\nval y : B = false\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
@@ -72,7 +79,7 @@ public class SlangGen_TypesTest
 	private List<GeneratedModule> generateModules(File file)
 			throws AnalysisException
 	{
-		TypeCheckerUtil.TypeCheckResult<List<SClassDefinition>> tcResult = TypeCheckerUtil.typeCheckPp(file);
+		TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
 
 		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
 		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());

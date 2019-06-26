@@ -1,1 +1,1 @@
-val $node.getName() : $SlangFormat.format($node.getType()) = $SlangFormat.format($node.getInitial())
+$SlangFormat.findModifier($node) $node.getName() : $SlangFormat.format($node.getType()) = $SlangFormat.format($node.getInitial())
