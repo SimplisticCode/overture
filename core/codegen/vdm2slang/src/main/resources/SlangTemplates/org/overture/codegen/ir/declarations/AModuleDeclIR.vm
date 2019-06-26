@@ -1,0 +1,4 @@
+#foreach( $decl in $node.Decls )
+    $SlangFormat.format($decl)
+
+#end
