@@ -2,8 +2,11 @@ package org.overture.codegen.vdm2slang;
 
 import org.apache.log4j.Logger;
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.expressions.PExp;
 import org.overture.codegen.ir.*;
 import org.overture.codegen.merging.MergeVisitor;
+import org.overture.codegen.trans.DivideTrans;
+import org.overture.codegen.utils.Generated;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 
@@ -68,6 +71,31 @@ public class SlangGen extends CodeGenBase
 		data.setClasses(genModules);
 
 		return data;
+	}
+
+
+	public Generated generateSlangFromVdmExp(PExp exp) throws AnalysisException,
+			org.overture.codegen.ir.analysis.AnalysisException
+	{
+		// There is no name validation here.
+		IRStatus<SExpIR> expStatus = generator.generateFrom(exp);
+
+		if (expStatus.canBeGenerated())
+		{
+			// "expression" generator only supports a single transformation
+			generator.applyPartialTransformation(expStatus, new DivideTrans(getInfo()));
+		}
+
+		try
+		{
+			return genIrExp(expStatus, slangFormat.getMergeVisitor());
+
+		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+		{
+			log.error("Could not generate expression: " + exp);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private GeneratedModule generate(IRStatus<PIR> status)

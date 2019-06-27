@@ -1,9 +1,6 @@
 #set( $returnType = $SlangFormat.format($node.getMethodType().getResult()) )
 #set( $params = $SlangFormat.format($node.getFormalParams()))
-##
 #set( $body = $SlangFormat.formatOperationBody($node.getBody()))
-##
-$Slang.formatVdmSource($node)##
 ##
 $returnType def $node.getName()(${params})
 $body

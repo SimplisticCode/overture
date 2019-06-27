@@ -25,8 +25,18 @@ public class SlangGen_Functions
 		Settings.release = Release.VDM_10;
 	}
 
+	@Test public void identity() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Functions/IdentityFunction.vdmpp");
 
-	@Test public void simpleFunctions() throws AnalysisException
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "val i_am_boolean : B = true\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void add1() throws AnalysisException
 	{
 		File file = new File("src/test/resources/Functions/AddFunction.vdmpp");
 
