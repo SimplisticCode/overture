@@ -1,7 +1,7 @@
 ## TODO: handle 'functions', 'operations' and 'traces'
 import org.sireum._
 
-//$node.getName():
+class $node.getName():
 #**##foreach( $f in $node.getFields() )
 #**#$SlangFormat.format($f)
 #**##end

@@ -3,5 +3,9 @@
 ##
 #set( $body = $SlangFormat.formatOperationBody($node.getBody()))
 ##
-$returnType def $node.getName()(${params})
+$SlangFormat.formatVdmSource($node)##
+##
+$SlangFormat.formatMetaData($node.getMetaData())##
+##
+def $node.getName()(${params}):$returnType
 $body

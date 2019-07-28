@@ -16,7 +16,7 @@ import org.overture.codegen.vdm2slang.SlangGen;
 import java.io.File;
 import java.util.List;
 
-public class SlangGenTest
+public class SlangGen_classes
 {
 
 	@BeforeAll public static void initTesting()
@@ -28,13 +28,13 @@ public class SlangGenTest
 
 	@Test public void emptyClass() throws AnalysisException
 	{
-		File file = new File("src/test/resources/EmptyClass.vdmpp");
+		File file = new File("src/test/resources/Classes/EmptyClass.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
 		assertSingleClass(classes);
 
-		String expectedCode = "class A:\n  pass\n";
+		String expectedCode = "import org.sireum._\n\nclass A:\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
@@ -46,13 +46,39 @@ public class SlangGenTest
 
 	@Test public void classSingleField() throws AnalysisException
 	{
-		File file = new File("src/test/resources/nat.vdmpp");
+		File file = new File("src/test/resources/Classes/ClassSingleValue.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
 		assertSingleClass(classes);
 
-		String expectedCode = "class A:\n  x = 5\n";
+		String expectedCode = "import org.sireum._\n\nclass A:\nval x : Z = 5\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void classMultipleFields() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Classes/ClassMultipleFields.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\nval x : Z = 5\nval y : B = true\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void classSingleBooleanField() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Classes/ClassBooleanSingleValue.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\nval x : B = true\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}

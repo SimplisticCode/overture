@@ -1,0 +1,7 @@
+class A
+
+values
+x : nat = 5;
+y : bool = true;
+
+end A

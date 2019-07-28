@@ -2,5 +2,5 @@
 #set( $params = $SlangFormat.format($node.getFormalParams()))
 #set( $body = $SlangFormat.formatOperationBody($node.getBody()))
 ##
-$returnType def $node.getName()(${params})
+def $node.getName()(${params}):$returnType
 $body

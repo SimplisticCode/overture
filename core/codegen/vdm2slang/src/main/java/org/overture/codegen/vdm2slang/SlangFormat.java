@@ -11,10 +11,7 @@ import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
-import org.overture.codegen.ir.types.ABoolBasicTypeIR;
-import org.overture.codegen.ir.types.SMapTypeIR;
-import org.overture.codegen.ir.types.SSeqTypeIR;
-import org.overture.codegen.ir.types.SSetTypeIR;
+import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
@@ -64,6 +61,16 @@ public class SlangFormat
 	{
 		ANotUnaryExpIR transformed = transNotEquals(node);
 		return formatNotUnary(transformed.getExp());
+	}
+
+	public boolean isNull(INode node)
+	{
+		return node == null;
+	}
+
+	public boolean isVoidType(STypeIR node)
+	{
+		return node instanceof AVoidTypeIR;
 	}
 
 	private ANotUnaryExpIR transNotEquals(ANotEqualsBinaryExpIR notEqual)

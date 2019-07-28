@@ -31,7 +31,7 @@ public class SlangGen_Functions
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "val i_am_boolean : B = true\n";
+		String expectedCode = "Z def f(x : Z)\nreturn x\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
@@ -42,7 +42,7 @@ public class SlangGen_Functions
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "val i_am_boolean : B = true\n";
+		String expectedCode = "Z def f(x : Z)\nreturn x\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
