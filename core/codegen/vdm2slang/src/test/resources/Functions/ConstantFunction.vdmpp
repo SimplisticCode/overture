@@ -1,0 +1,4 @@
+functions
+
+f :  () -> nat
+f () == 2;

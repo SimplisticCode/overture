@@ -31,10 +31,22 @@ public class SlangGen_Functions
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "Z def f(x : Z)\nreturn x\n";
+		String expectedCode = "def f(x : Z):Z ==\nreturn x\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
+
+	@Test public void constant() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Functions/ConstantFunction.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "def f():Z\nreturn 2\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
 
 	@Test public void add1() throws AnalysisException
 	{

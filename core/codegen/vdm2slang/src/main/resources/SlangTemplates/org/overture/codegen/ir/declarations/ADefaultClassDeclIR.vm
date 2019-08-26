@@ -5,3 +5,7 @@ class $node.getName():
 #**##foreach( $f in $node.getFields() )
 #**#$SlangFormat.format($f)
 #**##end
+
+#**##foreach($method in $node.getMethods() )
+#**#$SlangFormat.format($method)
+#**##end

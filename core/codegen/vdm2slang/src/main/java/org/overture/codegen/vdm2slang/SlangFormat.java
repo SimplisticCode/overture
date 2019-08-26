@@ -1,11 +1,12 @@
 package org.overture.codegen.vdm2slang;
 
-import org.overture.codegen.ir.INode;
-import org.overture.codegen.ir.SExpIR;
-import org.overture.codegen.ir.SStmIR;
-import org.overture.codegen.ir.STypeIR;
+import org.overture.ast.intf.lex.ILexLocation;
+import org.overture.ast.util.ClonableString;
+import org.overture.codegen.assistant.LocationAssistantIR;
+import org.overture.codegen.ir.*;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AInterfaceDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
@@ -17,28 +18,71 @@ import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 
 import java.io.StringWriter;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 
 public class SlangFormat
 {
 	private static final String SLANG_FORMAT_KEY = "SlangFormat";
 
+	protected SlangValueSemantics valueSemantics;
+
 	protected Logger log = Logger.getLogger(this.getClass().getName());
 
 	private MergeVisitor codeEmitter;
+	protected FuncValAssistant funcValAssist;
 
 	public SlangFormat(String root)
 	{
 		TemplateCallable[] callables = new TemplateCallable[] {
 				new TemplateCallable(SLANG_FORMAT_KEY, this) };
 		this.codeEmitter = new MergeVisitor(new TemplateManager(root), callables);
+		this.funcValAssist = null;
 	}
+
 
 	public MergeVisitor getMergeVisitor()
 	{
 		return codeEmitter;
+	}
+
+	public String format(AMethodTypeIR methodType) throws AnalysisException
+	{
+		final String OBJ = "Object";
+
+		if (funcValAssist == null)
+		{
+			return OBJ;
+		}
+
+		AInterfaceDeclIR methodTypeInterface = funcValAssist.findInterface(methodType);
+
+		if (methodTypeInterface == null)
+		{
+			return OBJ; // Should not happen
+		}
+
+		AInterfaceTypeIR methodClass = new AInterfaceTypeIR();
+		methodClass.setName(methodTypeInterface.getName());
+
+		LinkedList<STypeIR> params = methodType.getParams();
+
+		for (STypeIR param : params)
+		{
+			methodClass.getTypes().add(param.clone());
+		}
+
+		methodClass.getTypes().add(methodType.getResult().clone());
+
+		if(methodType.parent() != null)
+		{
+			methodType.parent().replaceChild(methodType, methodClass);
+		}
+
+		return methodClass != null ? format(methodClass) : OBJ;
 	}
 
 	public String formatNotUnary(SExpIR exp) throws AnalysisException
@@ -62,6 +106,9 @@ public class SlangFormat
 		ANotUnaryExpIR transformed = transNotEquals(node);
 		return formatNotUnary(transformed.getExp());
 	}
+
+
+
 
 	public boolean isNull(INode node)
 	{
@@ -98,6 +145,38 @@ public class SlangFormat
 		return notUnary;
 	}
 
+	public String formatVdmSource(PIR irNode)
+	{
+		if (irNode != null)
+		{
+			org.overture.ast.node.INode vdmNode = LocationAssistantIR.getVdmNode(irNode);
+
+			if (vdmNode != null)
+			{
+			}
+		}
+
+		return "";
+	}
+
+
+	public static String formatMetaData(List<ClonableString> metaData)
+	{
+		if (metaData == null || metaData.isEmpty())
+		{
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		for (ClonableString str : metaData)
+		{
+			sb.append(str.value).append('\n');
+		}
+
+		return sb.append('\n').toString();
+	}
+
 	private String handleEquals(AEqualsBinaryExpIR valueType)
 			throws AnalysisException
 	{
@@ -106,9 +185,32 @@ public class SlangFormat
 
 	public String findModifier(Boolean isFinal) throws AnalysisException
 	{
-		if(isFinal) return "val";
+		return isFinal ? "val" : "var";
+	}
 
-		return "var";
+	public String formatTemplateTypes(List<STypeIR> types)
+			throws AnalysisException
+	{
+		return !types.isEmpty() ? "<" + formattedTypes(types, "") + ">" : "";
+	}
+
+	private String formattedTypes(List<STypeIR> types, String typePostFix)
+			throws AnalysisException
+	{
+		STypeIR firstType = types.get(0);
+
+		StringWriter writer = new StringWriter();
+		writer.append(format(firstType) + typePostFix);
+
+		for (int i = 1; i < types.size(); i++)
+		{
+			STypeIR currentType = types.get(i);
+			writer.append(", " + format(currentType) + typePostFix);
+		}
+
+		String result = writer.toString();
+
+		return result;
 	}
 
 	public String format(INode node) throws AnalysisException
@@ -119,13 +221,17 @@ public class SlangFormat
 		return writer.toString();
 	}
 
+	public String getSlangNumber()
+	{
+		return "Z";
+	}
+
 	public String format(List<AFormalParamLocalParamIR> params)
 			throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();
 
-		if (params.size() <= 0)
-		{
+		if (params.size() <= 0) {
 			return "";
 		}
 
@@ -151,7 +257,7 @@ public class SlangFormat
 
         StringWriter generatedBody = new StringWriter();
 
-        generatedBody.append("{" + NEWLINE + NEWLINE);
+        generatedBody.append("{" + NEWLINE);
         generatedBody.append(handleOpBody(body));
         generatedBody.append(NEWLINE + "}");
 
