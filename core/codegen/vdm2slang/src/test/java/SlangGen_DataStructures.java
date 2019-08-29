@@ -16,18 +16,18 @@ import org.overture.typechecker.util.TypeCheckerUtil;
 import java.io.File;
 import java.util.List;
 
-public class SlangGen_Functions
+//Data structures: Set /\ Sequence
+public class SlangGen_DataStructures
 {
-
 	@BeforeAll public static void initTesting()
 	{
 		Settings.dialect = Dialect.VDM_SL;
 		Settings.release = Release.VDM_10;
 	}
 
-	@Test public void identity() throws AnalysisException
+	@Test public void Sequence() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Functions/IdentityFunction.vdmpp");
+		File file = new File("src/test/resources/DataStructures/IdentityFunction.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -58,38 +58,15 @@ public class SlangGen_Functions
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void booleanFunction() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Functions/BooleanFunction.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def f(x : B):B ==\ntrue\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-	//Local variables
-	@Test public void localVariables() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Functions/localVariables.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def f(x : B):B ==\ntrue\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-
 
 	//Pre /\ Post conditions
 
 
+	//Data structures: Set /\ Sequence
 
 
 	//State
-
+	
 
 	private void validateCode(String expectedCode, String actualCode)
 	{

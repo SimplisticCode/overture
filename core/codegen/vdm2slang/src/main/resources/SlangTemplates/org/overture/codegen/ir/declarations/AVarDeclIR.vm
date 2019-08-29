@@ -1,0 +1,11 @@
+##
+#set( $end = ";")
+#if ( $SlangFormat.isLoopVar($node) )
+	#set( $end = "")
+#end
+##
+//#set( $pattern = $SlangFormat.format($node.getPattern()) )
+##
+$SlangFormat.formatMetaData($node.getMetaData())##
+##
+$SlangFormat.format($node.getType()) $pattern = $SlangFormat.format($node.getExp())${end}

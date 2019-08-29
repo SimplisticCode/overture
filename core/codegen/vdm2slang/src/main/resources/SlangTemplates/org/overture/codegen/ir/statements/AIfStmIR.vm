@@ -1,0 +1,16 @@
+if ( $SlangFormat.format($node.getIfExp()) )
+{
+	$SlangFormat.format($node.getThenStm())
+}
+#foreach( $stm in $node.getElseIf() )
+else if ( $SlangFormat.format($stm.getElseIf()) )
+{
+	$SlangFormat.format($stm.getThenStm())
+}
+#end
+#if ( !$SlangFormat.isNull($node.getElseStm()) )
+else
+{
+	$SlangFormat.format($node.getElseStm())
+}
+#end

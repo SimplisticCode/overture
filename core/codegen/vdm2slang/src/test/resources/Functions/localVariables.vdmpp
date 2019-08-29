@@ -1,0 +1,8 @@
+functions
+
+CalcProbCrossed: real -> real
+CalcProbCrossed(n) ==
+(
+	dcl retVal : real := 0;
+	return retVal;
+);

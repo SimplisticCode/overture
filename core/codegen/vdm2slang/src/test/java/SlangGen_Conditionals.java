@@ -32,14 +32,14 @@ public class SlangGen_Conditionals
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "val i_am_boolean : B = true\n";
+		String expectedCode = "def absfunct(x:Z): Z =\nif (x < 0) -x else x\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
 
 	@Test public void ifElse() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Conditionals/ifelse.vdmpp");
+		File file = new File("src/test/resources/Conditionals/less.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 

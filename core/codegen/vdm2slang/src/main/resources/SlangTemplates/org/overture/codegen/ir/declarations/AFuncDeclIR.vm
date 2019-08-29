@@ -1,7 +1,7 @@
-#set( $body = $SlangFormat.formatOperationBody($node.getBody()))
+#set( $body = $SlangFormat.format($node.getBody()))
 ##
 #set( $returnType = $SlangFormat.format($node.getMethodType().getResult()) )
 #set( $params = $SlangFormat.format($node.getFormalParams()))
 ##
-def $node.getName()(${params}):$returnType
+def $node.getName()(${params}):$returnType =
 $body

@@ -1,0 +1,5 @@
+functions
+
+less : int * int -> bool
+less(x, y)==
+    x < y

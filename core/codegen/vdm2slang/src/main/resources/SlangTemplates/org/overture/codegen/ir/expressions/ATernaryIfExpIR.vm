@@ -1,0 +1,1 @@
+if($SlangFormat.format($node.getCondition(), false)) $SlangFormat.format($node.getTrueValue(), false) else $SlangFormat.format($node.getFalseValue(), false)

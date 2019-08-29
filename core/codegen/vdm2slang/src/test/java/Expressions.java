@@ -31,7 +31,6 @@ public class Expressions
 		validateCode(expectedCode, slangCode);
 	}
 
-
 	@Test public void and() throws Exception
 	{
 		File file = new File("src/test/resources/Expressions/AndOperator.vdmpp");

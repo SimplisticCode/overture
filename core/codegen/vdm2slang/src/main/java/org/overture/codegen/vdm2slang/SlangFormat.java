@@ -8,10 +8,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AInterfaceDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
-import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
-import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
-import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
-import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -48,6 +45,30 @@ public class SlangFormat
 	{
 		return codeEmitter;
 	}
+
+	public String format(SExpIR exp, boolean leftChild) throws AnalysisException
+	{
+		String formattedExp = format(exp);
+
+		SlangPrecedence precedence = new SlangPrecedence();
+
+		INode parent = exp.parent();
+
+		if (!(parent instanceof SExpIR))
+		{
+			return formattedExp;
+		}
+
+		boolean isolate = precedence.mustIsolate((SExpIR) parent, exp, leftChild);
+
+		return isolate ? "(" + formattedExp + ")" : formattedExp;
+	}
+
+	public String formatUnary(SExpIR exp) throws AnalysisException
+	{
+		return format(exp, false);
+	}
+
 
 	public String format(AMethodTypeIR methodType) throws AnalysisException
 	{
@@ -106,9 +127,6 @@ public class SlangFormat
 		ANotUnaryExpIR transformed = transNotEquals(node);
 		return formatNotUnary(transformed.getExp());
 	}
-
-
-
 
 	public boolean isNull(INode node)
 	{
