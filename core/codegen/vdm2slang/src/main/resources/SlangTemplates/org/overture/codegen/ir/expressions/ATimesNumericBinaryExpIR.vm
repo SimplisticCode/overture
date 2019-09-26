@@ -1,0 +1,1 @@
+$SlangFormat.format($node.getLeft(), true) * $SlangFormat.format($node.getRight(), false)

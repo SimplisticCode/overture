@@ -1,0 +1,9 @@
+#if ($SlangFormat.genDecl(${node}))
+	$node.getAccess() $SlangFormat.format(${node.getDecl()})
+#end
+##
+#set( $inv = $node.getInv())
+##
+#if (!$SlangFormat.isNull(${inv}))
+	$SlangFormat.format(${inv})
+#end

@@ -1,0 +1,5 @@
+functions
+
+f : nat -> nat
+f (x)== x + 1
+pre x > 4;

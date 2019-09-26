@@ -1,7 +1,24 @@
 ## TODO: handle 'functions', 'operations' and 'traces'
+#set( $package = "")
+#if (!$SlangFormat.isNull($node.getPackage()))
+    #set( $package = "package ${node.getPackage()};")
+#end
+##
+$package
+##
+
 import org.sireum._
+#foreach( $dep in $node.getDependencies() )
+import ${SlangFormat.getString($dep)};
+#end##
+
 
 class $node.getName():
+
+#foreach( $class in $node.getInnerClasses() )
+    $SlangFormat.format($class)
+#end##
+
 #**##foreach( $f in $node.getFields() )
 #**#$SlangFormat.format($f)
 #**##end
@@ -9,3 +26,17 @@ class $node.getName():
 #**##foreach($method in $node.getMethods() )
 #**#$SlangFormat.format($method)
 #**##end
+
+#if ($SlangFormat.isMainClass($node))
+    $node.getTag().getMainMethod()
+#end
+##
+#if ($SlangFormat.genClassInvariant($node))
+    $SlangFormat.format($node.getInvariant())
+#end
+
+#foreach( $typeDecl in $node.getTypeDecls() )
+    #if ($SlangFormat.genTypeDecl($typeDecl))
+        $SlangFormat.format($typeDecl)
+    #end
+#end

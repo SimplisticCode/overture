@@ -1,0 +1,1 @@
+#if ($SlangFormat.isStringType($node.getType()))$SlangFormat.buildString($node.getMembers())#elseSeq($SlangFormat.formatArgs($node.getMembers()))###end

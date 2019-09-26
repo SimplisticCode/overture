@@ -1,0 +1,5 @@
+functions
+
+f(x:nat) r:nat
+pre x > 4
+post r = x + 1 and r > 4;

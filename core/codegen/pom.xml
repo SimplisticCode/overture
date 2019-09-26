@@ -19,6 +19,14 @@
     <astcreator.version>1.6.8</astcreator.version>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.antipathy</groupId>
+      <artifactId>mvn-scalafmt_2.12</artifactId>
+      <version>1.0.0-RC3</version>
+    </dependency>
+  </dependencies>
+
   <modules>
     <module>ir</module>
     <module>platform</module>

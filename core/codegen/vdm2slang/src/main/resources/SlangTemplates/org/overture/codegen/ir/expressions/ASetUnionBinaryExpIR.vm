@@ -1,0 +1,4 @@
+#set( $left = $SlangFormat.format($node.getLeft()) )
+#set( $right = $SlangFormat.format($node.getRight()) )
+##
+${left}.union(${right})

@@ -1,0 +1,4 @@
+functions
+
+f : nat * nat -> nat
+f (x, y)== x + y;

@@ -16,7 +16,7 @@ import org.overture.typechecker.util.TypeCheckerUtil;
 import java.io.File;
 import java.util.List;
 
-public class SlangGen_Conditionals
+public class SlangGen_PreCon
 {
 
 	@BeforeAll public static void initTesting()
@@ -26,9 +26,9 @@ public class SlangGen_Conditionals
 	}
 
 
-	@Test public void ifSimple() throws AnalysisException
+	@Test public void SimplePre() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Conditionals/ifsimple.vdmpp");
+		File file = new File("src/test/resources/Pre/simple.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -37,9 +37,20 @@ public class SlangGen_Conditionals
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void less() throws AnalysisException
+	@Test public void explicitFunction() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Conditionals/less.vdmpp");
+		File file = new File("src/test/resources/Pre/explicit.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void doWhileLoop() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Loops/doWhileLoop.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 

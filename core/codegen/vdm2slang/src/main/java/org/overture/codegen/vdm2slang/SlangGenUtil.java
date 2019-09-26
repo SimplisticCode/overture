@@ -9,8 +9,7 @@ import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.Generated;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
-
-import java.util.Formatter;
+import org.scalafmt.interfaces.Scalafmt;
 
 public class SlangGenUtil
 {
@@ -49,20 +48,6 @@ public class SlangGenUtil
 					+ exp + ". Exception message: " + e.getMessage());
 		}
 	}
-
-//	public static String formatSlangCode(String code)
-//	{
-//		try
-//		{
-//			return new Formatter().formatSource(code);
-//		} catch (FormatterException e)
-//		{
-//			log.error("Could not format code: " + e.getMessage());
-//			e.printStackTrace();
-//			return code;
-//		}
-//	}
-
 
 	public static boolean isSlangKeyword(String s)
 	{

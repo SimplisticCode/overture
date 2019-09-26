@@ -24,7 +24,7 @@ public class SlangGen extends CodeGenBase
 
 	public SlangGen()
 	{
-		this.slangFormat = new SlangFormat(SLANG_TEMPLATES_ROOT_FOLDER);
+		this.slangFormat = new SlangFormat(SLANG_TEMPLATES_ROOT_FOLDER, generator.getIRInfo());
 	}
 
 	@Override protected GeneratedData genVdmToTargetLang(

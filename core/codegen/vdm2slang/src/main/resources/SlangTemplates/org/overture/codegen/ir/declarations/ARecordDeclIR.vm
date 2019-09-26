@@ -1,0 +1,12 @@
+static class $node.getName()
+{
+	#foreach( $field in $node.getFields() )
+	$SlangFormat.format($field)
+	#end
+
+
+	##
+	#foreach( $method in $node.getMethods() )
+	$SlangFormat.format($method)
+	#end
+}

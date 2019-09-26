@@ -1,0 +1,47 @@
+##Example1: t.getX(1, 1)
+##Example2: [1,2](1)
+##Example3: "kitten"(3)
+##
+#set( $root = $SlangFormat.format($node.getRoot()) )
+#set( $args = $SlangFormat.formatArgs($node.getArgs()) )
+##
+#if ($SlangFormat.isSeqType($node.getRoot()) && $node.getArgs().size() == 1)
+##
+	#set( $index = $SlangFormat.format($node.getArgs().get(0)))
+	#set ( $seqRead = "" )
+	#if ($SlangFormat.castNotNeeded($node.getType()))
+		#set ( $seqRead = "Utils.get(${root},${index})" )
+	#else
+		#set ( $seqRead = "(($SlangFormat.format($node.getType())) Utils.get(${root},${index}))" )
+	#end
+##
+	#if ($ValueSemantics.shouldClone($node))
+		Utils.copy(${seqRead})
+	#else
+		${seqRead}
+	#end
+##
+#elseif ($SlangFormat.isMapType($node.getRoot()) && $node.getArgs().size() == 1)
+	#set( $key = $SlangFormat.format($node.getArgs().get(0)))
+	#set ( $mapRead = "" )
+	#if ($SlangFormat.castNotNeeded($node.getType()))
+		#set ( $mapRead = "Utils.get(${root},${key})" )
+	#else
+		#set ( $mapRead = "(($SlangFormat.format($node.getType())) Utils.get(${root},${key}))" )
+	#end
+	#if ($ValueSemantics.shouldClone($node))
+		Utils.copy(${mapRead})
+	#else
+		${mapRead}
+	#end
+##
+#elseif ($SlangFormat.isStringType($node.getRoot()))
+	#set( $index = $SlangFormat.format($node.getArgs().get(0)))
+	${root}.charAt(Utils.index($index))##
+##
+#elseif ($SlangFormat.isLambda($node))
+	${root}.eval(${args})##
+##
+#else
+	${root}($args)##
+#end

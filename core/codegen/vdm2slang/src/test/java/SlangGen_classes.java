@@ -104,7 +104,20 @@ public class SlangGen_classes
 
 		assertSingleClass(classes);
 
-		String expectedCode = "import org.sireum._\n\nclass A:\n	def f(x:Z):Z == return x\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void alarm() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Classes/alarm.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}

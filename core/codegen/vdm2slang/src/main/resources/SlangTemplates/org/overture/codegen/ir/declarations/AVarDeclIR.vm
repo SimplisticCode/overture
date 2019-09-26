@@ -4,8 +4,8 @@
 	#set( $end = "")
 #end
 ##
-//#set( $pattern = $SlangFormat.format($node.getPattern()) )
+#set( $pattern = $SlangFormat.format($node.getPattern()) )
 ##
 $SlangFormat.formatMetaData($node.getMetaData())##
 ##
-$SlangFormat.format($node.getType()) $pattern = $SlangFormat.format($node.getExp())${end}
+$SlangFormat.findModifier($node.getFinal()) $pattern : $SlangFormat.format($node.getType()) = $SlangFormat.format($node.getExp())${end}

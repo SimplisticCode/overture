@@ -1,0 +1,4 @@
+#set( $set = $SlangFormat.format($node.getSet()) )
+#set( $element = $SlangFormat.format($node.getElement()) )
+##
+${set}.add(${element});

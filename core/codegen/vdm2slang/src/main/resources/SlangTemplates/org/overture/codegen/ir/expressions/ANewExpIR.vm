@@ -1,0 +1,1 @@
+new $SlangFormat.formatName($node)($SlangFormat.formatArgs($node.getArgs()))
