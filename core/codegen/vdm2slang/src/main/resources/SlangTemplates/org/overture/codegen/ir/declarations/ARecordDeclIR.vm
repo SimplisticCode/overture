@@ -1,4 +1,4 @@
-static class $node.getName()
+class $node.getName()
 {
 	#foreach( $field in $node.getFields() )
 	$SlangFormat.format($field)

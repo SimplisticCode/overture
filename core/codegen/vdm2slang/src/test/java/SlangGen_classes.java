@@ -77,7 +77,6 @@ public class SlangGen_classes
 	List<GeneratedModule> classes = generateModules(file);
 
 	assertSingleClass(classes);
-
 	String expectedCode = "import org.sireum._\n\nclass A:\nval x : B = true\n\ndef A():A\n{\n\t\t\n}\n\n";
 	String actualCode = classes.get(0).getContent();
 	validateCode(expectedCode, actualCode);

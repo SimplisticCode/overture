@@ -1,0 +1,20 @@
+#set( $init = "" )
+#if ( !$SlangFormat.isNull($node.getInit()) )
+	#set( $init = $SlangFormat.format($node.getInit()) )
+#end
+##
+#set( $cond = "" )
+#if ( !$SlangFormat.isNull($node.getCond()) )
+	#set( $cond = $SlangFormat.format($node.getCond()) )
+#end
+##
+#set( $inc = "" )
+#if ( !$SlangFormat.isNull($node.getInc()) )
+	#set( $inc = $SlangFormat.format($node.getInc()) )
+#end
+##
+#set( $body = $SlangFormat.format($node.getBody()) )
+for(${init}; ${cond}; ${inc})
+{
+	${body}
+}

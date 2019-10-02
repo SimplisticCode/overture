@@ -1,1 +1,1 @@
-$SlangFormat.formatIdentifierVar($node)
+$JavaFormat.formatIdentifierVar($node)

@@ -1,0 +1,12 @@
+#set( $iterator = $JavaFormat.genIteratorName() )
+#set( $exp = $JavaFormat.format($node.getExp()) )
+#set( $var = $JavaFormat.format($node.getPattern()) )
+#set( $elementType = $JavaFormat.formatElementType($node.getExp().getType()) )
+#set( $body = $JavaFormat.format($node.getBody()) )
+##
+## We cast $exp to in case it is masked by a union type
+for (Iterator ${iterator} = ((Iterable) ${exp}).iterator(); ${iterator}.hasNext();)
+{
+	${elementType} ${var} = (${elementType}) ${iterator}.next();
+	${body}
+}

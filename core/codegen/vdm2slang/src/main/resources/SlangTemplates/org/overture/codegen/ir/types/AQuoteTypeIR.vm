@@ -1,0 +1,3 @@
+#set( $packagePrefix = $SlangFormat.getQuotePackagePrefix() )
+##
+${packagePrefix}${node.getValue()}Quote

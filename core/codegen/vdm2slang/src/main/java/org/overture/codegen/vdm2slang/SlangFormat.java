@@ -14,6 +14,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.*;
 import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
@@ -61,12 +62,6 @@ public class SlangFormat
 		return codeEmitter;
 	}
 
-	public String format(Object exp)
-	{
-		String a = "as";
-		return a;
-	}
-
 	public String format(SExpIR exp, boolean leftChild) throws AnalysisException
 	{
 		String formattedExp = format(exp);
@@ -85,10 +80,17 @@ public class SlangFormat
 		return isolate ? "(" + formattedExp + ")" : formattedExp;
 	}
 
+
+
 	public String formatUnary(SExpIR exp) throws AnalysisException
 	{
 		return format(exp, false);
 	}
+
+	public String format(Object methodType) throws AnalysisException{
+		return "";
+	}
+
 
 
 	public String format(AMethodTypeIR methodType) throws AnalysisException
@@ -187,7 +189,7 @@ public class SlangFormat
 
             typeNameStr += typeName.getDefiningClass();//  + TYPE_DECL_PACKAGE_SUFFIX + ".";
 
-            typeNameStr += typeName.getName();
+            //typeNameStr += typeName.getName();
 
             return typeNameStr;
         }
@@ -457,11 +459,32 @@ public class SlangFormat
 		return !(node.getDecl() instanceof ANamedTypeDeclIR);
 	}
 
-	/*public String formatIdentifierVar(Object var)
+	public String formatIdentifierVar(AIdentifierPatternIR var)
 	{
-		Integer a = 1;
-		return a.toString();
-	}*/
+		String varName = "";
+		varName = var.getName();
+		return varName;
+	}
+
+	public boolean isLambda(AApplyExpIR applyExp)
+	{
+		SExpIR root = applyExp.getRoot();
+
+		if (root instanceof AApplyExpIR
+				&& root.getType() instanceof AMethodTypeIR)
+		{
+			return true;
+		}
+
+		if (!(root instanceof SVarExpIR))
+		{
+			return false;
+		}
+
+		SVarExpIR varExp = (SVarExpIR) root;
+
+		return varExp.getIsLambda() != null && varExp.getIsLambda();
+	}
 
 	public String formatIdentifierVar(AIdentifierVarExpIR var)
 	{
@@ -540,4 +563,6 @@ public class SlangFormat
 
 		return varName;
 	}
+
+
 }

@@ -1,7 +1,46 @@
-#set( $body = $SlangFormat.format($node.getBody()))
+#set( $package = "")
+#if (!$SlangFormat.isNull($node.getPackage()))
+    #set( $package = "package ${node.getPackage()};")
+#end
 ##
-#set( $returnType = $SlangFormat.format($node.getMethodType().getResult()) )
-#set( $params = $SlangFormat.format($node.getFormalParams()))
+$package
 ##
-def $node.getName()(${params}):$returnType =
-$body
+import org.sireum._
+#foreach( $dep in $node.getDependencies() )
+import ${SlangFormat.getString($dep)};
+#end##
+
+$SlangFormat.formatMetaData($node.getGlobalMetaData())##
+
+class $node.getName()
+{
+#foreach( $class in $node.getInnerClasses() )
+    $SlangFormat.format($class)
+#end##
+
+#**##foreach( $f in $node.getFields() )
+#**#$SlangFormat.format($f)
+#**##end
+
+#**##foreach($method in $node.getMethods() )
+#**#$SlangFormat.format($method)
+#**##end
+
+#**##foreach($func in $node.getFunctions() )
+#**#$SlangFormat.format($func)
+#**##end
+
+#if ($SlangFormat.isMainClass($node))
+    $node.getTag().getMainMethod()
+#end
+##
+#if ($SlangFormat.genClassInvariant($node))
+    $SlangFormat.format($node.getInvariant())
+#end
+
+#foreach( $typeDecl in $node.getTypeDecls() )
+    #if ($SlangFormat.genTypeDecl($typeDecl))
+        $SlangFormat.format($typeDecl)
+    #end
+#end
+}
