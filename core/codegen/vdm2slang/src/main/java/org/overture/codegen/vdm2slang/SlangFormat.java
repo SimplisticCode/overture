@@ -16,6 +16,9 @@ import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.SAltStmStmBase;
+import org.overture.codegen.ir.statements.SAltStmStmIR;
+import org.overture.codegen.ir.statements.SCallStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -360,7 +363,39 @@ public class SlangFormat
 		return writer.toString();
 	}
 
-    public String formatOperationBody(SStmIR body) throws AnalysisException
+	public String formatOperationBody(SExpIR body) throws AnalysisException
+	{
+		String NEWLINE = "\n";
+		if (body == null)
+		{
+			return "";
+		}
+
+		StringWriter generatedBody = new StringWriter();
+		generatedBody.append("{" + NEWLINE);
+
+		AFuncDeclIR func = body.getAncestor(AFuncDeclIR.class);
+		SDeclIR preConditions = func.getPreCond();
+		SDeclIR postConditions = func.getPostCond();
+
+		formatPrePostSection(NEWLINE, generatedBody, preConditions, postConditions);
+
+		generatedBody.append(formatUnary(body));
+		generatedBody.append(NEWLINE + "}");
+
+		return generatedBody.toString();
+	}
+
+	private void formatPrePostSection(String NEWLINE, StringWriter generatedBody, SDeclIR preConditions, SDeclIR postConditions) throws AnalysisException {
+		if(preConditions != null || postConditions != null){
+			generatedBody.append("l\"\"\"{" + NEWLINE);
+			generatedBody.append(formatCond(preConditions, "pre"));
+			generatedBody.append(formatCond(postConditions, "post"));
+			generatedBody.append("\"\"\"}" + NEWLINE);
+		}
+	}
+
+	public String formatOperationBody(SStmIR body) throws AnalysisException
     {
         String NEWLINE = "\n";
         if (body == null)
@@ -371,15 +406,30 @@ public class SlangFormat
         StringWriter generatedBody = new StringWriter();
 
         generatedBody.append("{" + NEWLINE);
+		AMethodDeclIR func = body.getAncestor(AMethodDeclIR.class);
+		SDeclIR preConditions = func.getPreCond();
+		SDeclIR postConditions = func.getPostCond();
+
+		formatPrePostSection(NEWLINE, generatedBody, preConditions, postConditions);
+
         generatedBody.append(handleOpBody(body));
         generatedBody.append(NEWLINE + "}");
 
         return generatedBody.toString();
     }
 
+	public String formatCond(SDeclIR cond, String prepost) throws AnalysisException {
+		if(cond == null){
+			return "";
+		}
+		SExpIR exp = ((AFuncDeclIR) cond).getBody();
+		String conditions = String.format("%s %s\n", prepost, formatUnary(exp));
+		return conditions;
+	}
+
     private String handleOpBody(SStmIR body) throws AnalysisException
     {
-        AMethodDeclIR method = body.getAncestor(AMethodDeclIR.class);
+		AMethodDeclIR method = body.getAncestor(AMethodDeclIR.class);
 
         if (method == null)
         {
