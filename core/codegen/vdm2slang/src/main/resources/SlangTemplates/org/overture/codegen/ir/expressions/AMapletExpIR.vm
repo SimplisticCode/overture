@@ -1,1 +1,1 @@
-scala.collection.mutable.Map(SlangFormat.format($node.getLeft()) -> $SlangFormat.format($node.getRight()))
+Map(SlangFormat.format($node.getLeft()) -> $SlangFormat.format($node.getRight()))

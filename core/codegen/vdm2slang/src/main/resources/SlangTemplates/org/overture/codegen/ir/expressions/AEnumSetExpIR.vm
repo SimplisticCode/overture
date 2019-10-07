@@ -1,1 +1,1 @@
-scala.collection.mutable.Set($SlangFormat.formatArgs($node.getMembers()))
+Set($SlangFormat.formatArgs($node.getMembers()))

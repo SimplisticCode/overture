@@ -1,1 +1,1 @@
-scala.collection.mutable.ListMap($SlangFormat.formatArgs($node.getMembers())
+Map($SlangFormat.formatArgs($node.getMembers())

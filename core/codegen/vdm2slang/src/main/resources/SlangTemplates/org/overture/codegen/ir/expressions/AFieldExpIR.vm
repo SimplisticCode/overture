@@ -1,0 +1,3 @@
+#set ( $field = "$SlangFormat.format($node.getObject()).$node.getMemberName()" )
+##
+${field}##

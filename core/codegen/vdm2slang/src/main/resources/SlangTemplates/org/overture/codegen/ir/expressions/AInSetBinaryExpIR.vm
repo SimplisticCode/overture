@@ -1,0 +1,4 @@
+#set( $element = $SlangFormat.format($node.getLeft()) )
+#set( $set = $SlangFormat.format($node.getRight()) )
+##
+${set}.contains(${element})

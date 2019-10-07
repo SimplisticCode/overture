@@ -1,4 +1,4 @@
-#set( $left = $SlangFormat.format($node.getLeft()) )
-#set( $right = $SlangFormat.format($node.getRight()) )
+#set( $left = $JavaFormat.format($node.getLeft()) )
+#set( $right = $JavaFormat.format($node.getRight()) )
 ##
-${left}.diff(${right})
+SetUtil.SetDifference(${left}, ${right})

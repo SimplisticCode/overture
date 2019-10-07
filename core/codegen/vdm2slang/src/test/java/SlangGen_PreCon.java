@@ -26,16 +26,30 @@ public class SlangGen_PreCon
 	}
 
 
+
+
 	@Test public void SimplePre() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Pre/simple.vdmpp");
+		File file = new File("src/test/resources/Pre/simplePrePost.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "def absfunct(x : Z):Z =\nif(x < 0) -x else x\n";
+		String expectedCode = "@pure def f(x : Z):Z =\nl\"\"\"{\n pre x > 4\n post x > 5\n\"\"\"}\n x + 1\n}\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
+
+	@Test public void CompoundPost() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Pre/simpleCompoundPrePost.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "@pure def f(x : Z):Z =\nl\"\"\"{\n pre x > 4\n post x > 5\n\"\"\"}\n x + 1\n}\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
 
 	@Test public void explicitFunction() throws AnalysisException
 	{
@@ -48,18 +62,7 @@ public class SlangGen_PreCon
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void doWhileLoop() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/doWhileLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-	private void validateCode(String expectedCode, String actualCode)
+		private void validateCode(String expectedCode, String actualCode)
 	{
 		Assert.assertEquals("Got unexpected code", expectedCode, actualCode);
 	}

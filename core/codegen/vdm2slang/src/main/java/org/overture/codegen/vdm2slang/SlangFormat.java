@@ -90,11 +90,6 @@ public class SlangFormat
 		return format(exp, false);
 	}
 
-	public String format(Object methodType) throws AnalysisException{
-		return "";
-	}
-
-
 
 	public String format(AMethodTypeIR methodType) throws AnalysisException
 	{
@@ -207,11 +202,6 @@ public class SlangFormat
         return definingClass + typeName.getName();
     }
 
-
-    public String formatEqualsBinaryExp(AEqualsBinaryExpIR node)throws AnalysisException
-	{
-		return handleEquals(node);
-	}
 
 	public String formatNotEqualsBinaryExp(ANotEqualsBinaryExpIR node)
 			throws AnalysisException
@@ -340,6 +330,26 @@ public class SlangFormat
 	public String getSlangNumber()
 	{
 		return "Z";
+	}
+
+	public String formatDataFields(List<AFieldDeclIR> fields) throws AnalysisException {
+		if (fields.size() <= 0) {
+			return "";
+		}
+
+		StringWriter writer = new StringWriter();
+
+
+		AFieldDeclIR firstParam = fields.get(0);
+		writer.append(format(firstParam));
+
+		for (int i = 1; i < fields.size(); i++)
+		{
+			AFieldDeclIR field = fields.get(i);
+			writer.append(", ");
+			writer.append(format(field));
+		}
+		return writer.toString();
 	}
 
 	public String format(List<AFormalParamLocalParamIR> params)
@@ -539,7 +549,6 @@ public class SlangFormat
 	public String formatIdentifierVar(AIdentifierVarExpIR var)
 	{
 		String varName = "";
-
 		if(!getSlangSettings().genRecsAsInnerClasses() && (var != null && !var.getIsLocal()))
 		{
 			// Only the VDM-SL-to-JML generator uses this strategy
@@ -614,5 +623,60 @@ public class SlangFormat
 		return varName;
 	}
 
+	public String formatEqualsBinaryExp(AEqualsBinaryExpIR node)
+			throws AnalysisException
+	{
+		STypeIR leftNodeType = node.getLeft().getType();
+
+		if (leftNodeType instanceof SSeqTypeIR
+				|| leftNodeType instanceof SSetTypeIR
+				|| leftNodeType instanceof SMapTypeIR)
+		{
+			return handleCollectionComparison(node);
+		} else
+		{
+			return handleEquals(node);
+		}
+	}
+
+	private String handleCollectionComparison(SBinaryExpIR node)
+			throws AnalysisException
+	{
+		// In VDM the types of the equals are compatible when the AST passes the type check
+		SExpIR leftNode = node.getLeft();
+		SExpIR rightNode = node.getRight();
+
+		String empty = "Utils.empty(%s)";
+
+		if (isEmptyCollection(leftNode.getType()))
+		{
+			return String.format(empty, format(node.getRight()));
+		} else if (isEmptyCollection(rightNode.getType()))
+		{
+			return String.format(empty, format(node.getLeft()));
+		}
+
+		return  ".equals(" + format(node.getLeft()) + ", "
+				+ format(node.getRight()) + ")";
+	}
+
+	private boolean isEmptyCollection(STypeIR type)
+	{
+		if (type instanceof SSeqTypeIR)
+		{
+			SSeqTypeIR seq = (SSeqTypeIR) type;
+			return seq.getEmpty();
+		} else if (type instanceof SSetTypeIR)
+		{
+			SSetTypeIR set = (SSetTypeIR) type;
+			return set.getEmpty();
+		} else if (type instanceof SMapTypeIR)
+		{
+			SMapTypeIR map = (SMapTypeIR) type;
+			return map.getEmpty();
+		}
+
+		return false;
+	}
 
 }

@@ -1,0 +1,8 @@
+#set( $sizeCall = "")
+#if ($SlangFormat.isStringType($node.getExp().getType()))
+	#set( $sizeCall = ".length")
+#else
+	#set( $sizeCall = ".size")
+#end
+##
+$SlangFormat.format($node.getExp())$sizeCall
