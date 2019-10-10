@@ -1,0 +1,8 @@
+#set( $exp = $SlangFormat.format($node.getExp(), false))
+##
+#if ($SlangFormat.isUndefined($node))
+  ${exp}##
+#else
+  #set( $type = $SlangFormat.format($node.getType()))
+  (($type) $exp)##
+#end

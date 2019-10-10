@@ -1,1 +1,5 @@
-$SlangFormat.findModifier($node.getFinal()) $node.getName() : $SlangFormat.format($node.getType()) = $SlangFormat.format($node.getInitial())
+#set ($assignedTo = "")
+#if (!$SlangFormat.isNull($node.getInitial()))
+    #set($assignedTo = "=" + $SlangFormat.format($node.getInitial()))
+#end
+$SlangFormat.findModifier($node.getFinal()) $node.getName() : $SlangFormat.format($node.getType()) $assignedTo

@@ -1,0 +1,5 @@
+#set( $col = $SlangFormat.format($node.getCol()) )
+#set( $index = $SlangFormat.format($node.getIndex()) )
+#set( $value = $SlangFormat.format($node.getValue()) )
+##
+Utils.mapSeqUpdate(${col},${index},${value});

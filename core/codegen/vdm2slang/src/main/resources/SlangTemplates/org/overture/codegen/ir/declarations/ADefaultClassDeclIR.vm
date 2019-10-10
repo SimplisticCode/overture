@@ -5,6 +5,7 @@
 ##
 $package
 ##
+// #Sireum
 import org.sireum._
 #foreach( $dep in $node.getDependencies() )
 import ${SlangFormat.getString($dep)};

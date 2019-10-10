@@ -1,1 +1,1 @@
-$SlangFormat.format($node.getVar())--;
+$SlangFormat.format($node.getVar())--

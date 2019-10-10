@@ -1,4 +1,4 @@
-#set( $left = $JavaFormat.format($node.getLeft()) )
-#set( $right = $JavaFormat.format($node.getRight()) )
+#set( $left = $SlangFormat.format($node.getLeft()) )
+#set( $right = $SlangFormat.format($node.getRight()) )
 ##
-SetUtil.SubSet(${left}, ${right})
+SetUtil.Subset(${left}, ${right})

@@ -1,0 +1,6 @@
+#set( $exp = $SlangFormat.format($node.getExp()) )
+#if ($SlangFormat.isStringType($node.getType()))
+	SeqUtil.distConcStrings($exp)
+#else
+	SeqUtil.ConcateDist($exp)
+#end

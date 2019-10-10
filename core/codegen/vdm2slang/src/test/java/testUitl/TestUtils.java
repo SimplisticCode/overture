@@ -21,27 +21,18 @@
  */
 package testUitl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-
 import junit.framework.Assert;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
-import org.overture.codegen.tests.exec.util.FileComparator;
 import org.overture.codegen.utils.GeneralUtils;
-import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2slang.SlangGen;
-import org.overture.codegen.vdm2slang.SlangGenUtil;
-import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
+
+import java.io.File;
+import java.util.List;
 
 public class TestUtils
 {

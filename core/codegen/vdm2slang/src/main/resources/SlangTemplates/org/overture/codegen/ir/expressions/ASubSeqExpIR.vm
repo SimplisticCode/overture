@@ -1,0 +1,5 @@
+#set( $from = $SlangFormat.format($node.getFrom()) )
+#set( $to = $SlangFormat.format($node.getTo()) )
+#set( $seq = $SlangFormat.format($node.getSeq()) )
+##
+SeqUtil.SubSeq(${seq}, ${from}, ${to})
