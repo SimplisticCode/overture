@@ -6,7 +6,6 @@
 ## We cast $exp to in case it is masked by a union type
 for (elem <- ${exp}.elements)
 {
-
-	${elementType} ${var} = (${elementType}) ${iterator}.next();
+	${elementType} ${var} = (${elementType})
 	${body}
 }

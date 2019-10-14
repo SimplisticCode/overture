@@ -1,4 +1,4 @@
 #set( $left = $SlangFormat.format($node.getLeft()) )
 #set( $right = $SlangFormat.format($node.getRight()) )
 ##
-SetUtil.Subset(${left}, ${right})
+SetUtil.PSubset(${left}, ${right})

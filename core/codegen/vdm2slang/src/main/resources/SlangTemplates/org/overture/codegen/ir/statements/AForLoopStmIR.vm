@@ -10,11 +10,11 @@
 ##
 #set( $inc = "" )
 #if ( !$SlangFormat.isNull($node.getInc()) )
-	#set( $inc = $SlangFormat.format($node.getInc()) )
+	#set( $inc = "by " + $SlangFormat.format($node.getInc()) )
 #end
 ##
 #set( $body = $SlangFormat.format($node.getBody()) )
-for(${init}; ${cond}; ${inc})
+for(${init} to ${cond} ${inc})
 {
 	${body}
 }

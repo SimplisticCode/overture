@@ -1,1 +1,1 @@
-throw new UnsupportedOperationException()
+halt("Not implemented")

@@ -16,12 +16,11 @@ long ${toVar} = ${toExp};
 	#set( $step = "${index} += ${byVar}" )
 	#set( $condition = "${byVar} < 0 ? ${index} >= ${toVar} : ${index} <= ${toVar}")
 #else
-
 	#set( $condition = "${index} <= ${toVar}" )
 	#set( $step = "${index}++" )
 #end
 ##
-for(Long ${index} = ${fromExp}; ${condition}; ${step})
+for(${index} <- ${fromExp} to ${condition} by ${step})
 {
 	$body
 }
