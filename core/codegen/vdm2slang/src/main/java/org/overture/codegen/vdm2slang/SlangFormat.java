@@ -7,6 +7,7 @@ import org.overture.ast.expressions.AStringLiteralExp;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.patterns.ASetMultipleBind;
 import org.overture.ast.types.ARecordInvariantType;
+import org.overture.ast.types.AUnionType;
 import org.overture.ast.util.ClonableString;
 import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.assistant.LocationAssistantIR;
@@ -80,11 +81,10 @@ public class SlangFormat {
         return format(exp, false);
     }
 
-
     public String formatSet(List<SMultipleBindIR> bindings) throws AnalysisException {
         StringBuilder setComp = new StringBuilder();
-        for(SMultipleBindIR bind: bindings){
-            if(bind instanceof ASetMultipleBindIR){
+        for (SMultipleBindIR bind : bindings) {
+            if (bind instanceof ASetMultipleBindIR) {
                 setComp.append(format(((ASetMultipleBindIR) bind).getSet()));
             }
         }
@@ -101,38 +101,46 @@ public class SlangFormat {
         return map.toString();
     }
 
+    public String formatForAll(AForAllQuantifierExpIR node) {
+        return "";
+    }
 
+    //Ask Peter
+    public String formatInvariant(Object inv) {
+        return "";
+    }
 
     public String formatRecordPattern(ARecordPatternIR record) {
         return record.getTypename().toLowerCase();
     }
 
-
-    public String formatUnionTypes(List<AQuoteTypeIR> quotes) {
-        String NEWLINE = "\n";
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (AQuoteTypeIR quote : quotes) {
-            stringBuilder.append("'" + quote.getValue());
-            stringBuilder.append(NEWLINE);
-        }
-
-        return stringBuilder.toString();
-    }
-
     public String formatUnionType(AUnionTypeIR node) {
-        return "";//node.getNamedInvType().getName().getName() + ".Type";
+        if (node.parent() instanceof ADefaultClassDeclIR) {
+            String NEWLINE = "\n";
+            List<STypeIR> quotes = node.getTypes();
+            StringBuilder stringBuilder = new StringBuilder();
+            for (STypeIR quote : quotes) {
+                if (quote instanceof AQuoteTypeIR) {
+                    AQuoteTypeIR quoteType = (AQuoteTypeIR) quote;
+                    stringBuilder.append("'" + quoteType.getValue());
+                    stringBuilder.append(NEWLINE);
+                }
+            }
+
+            return stringBuilder.toString();
+        }
+        return node.getNamedInvType().getName().getName() + ".Type";
     }
 
-    public String formatPredicateVar (List<SMultipleBindIR> bindings) throws AnalysisException{
-        for(SMultipleBindIR bind: bindings){
+    public String formatPredicateVar(List<SMultipleBindIR> bindings) throws AnalysisException {
+        for (SMultipleBindIR bind : bindings) {
             return (format(bind.getPatterns().getFirst()));
         }
         return "";
     }
 
 
-    public String formatQuote(AQuoteLiteralExpIR quote){
+    public String formatQuote(AQuoteLiteralExpIR quote) {
         return quote.getValue();
     }
 
@@ -217,9 +225,7 @@ public class SlangFormat {
         if (typeName.getDefiningClass() != null && !(node instanceof ARecordTypeIR)) {
             String typeNameStr = "";
 
-            typeNameStr += typeName.getDefiningClass();
-
-            //typeNameStr += typeName.getName();
+            typeNameStr += typeName.getName();
 
             return typeNameStr;
         }
@@ -513,6 +519,11 @@ public class SlangFormat {
     public boolean genTypeDecl(ATypeDeclIR node) {
         if (node.getDecl() instanceof ARecordDeclIR) {
             return getSlangSettings().genRecsAsInnerClasses();
+        } else if (node.getDecl() instanceof AUnionTypeIR) {
+            return true;
+
+            //AUnionTypeIR union = (AUnionTypeIR) node.getDecl();
+            //return formatUnionType(union);
         } else {
             return info.getSettings().generateInvariants();
         }

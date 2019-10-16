@@ -1,5 +1,6 @@
 @datatype class $node.getName()($SlangFormat.formatDataFields($node.getFields()))
 {
+	$SlangFormat.formatInvariant($node)
 	#foreach( $method in $node.getMethods() )
 	$SlangFormat.format($method)
 	#end
