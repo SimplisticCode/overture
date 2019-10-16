@@ -2,6 +2,7 @@ import junit.framework.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
@@ -25,18 +26,6 @@ public class SlangGen_Loops
 		Settings.release = Release.VDM_10;
 	}
 
-
-	@Test public void forLoop() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/forLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def absfunct(x : Z):Z =\nif(x < 0) -x else x\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
 	@Test public void whileLoop() throws AnalysisException
 	{
 		File file = new File("src/test/resources/Loops/whileLoop.vdmpp");
@@ -44,6 +33,34 @@ public class SlangGen_Loops
 		List<GeneratedModule> classes = generateModules(file);
 
 		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void forAll1() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Loops/ForAllExpBlockStm.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String actualCode = classes.get(0).getContent();
+
+		validateCode(expectedCode, actualCode);
+	}
+
+
+	@Test public void forAll2() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Loops/ForAllExpInIfExp.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
@@ -67,7 +84,7 @@ public class SlangGen_Loops
 	private List<GeneratedModule> generateModules(File file)
 			throws AnalysisException
 	{
-		TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
+		TypeCheckerUtil.TypeCheckResult<List<SClassDefinition>> tcResult = TypeCheckerUtil.typeCheckPp(file);
 
 		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
 		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());

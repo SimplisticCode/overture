@@ -1,1 +1,1 @@
-Map(SlangFormat.format($node.getLeft()) -> $SlangFormat.format($node.getRight()))
+(SlangFormat.format($node.getLeft()), $SlangFormat.format($node.getRight()))

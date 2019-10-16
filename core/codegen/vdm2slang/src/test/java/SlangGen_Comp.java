@@ -83,6 +83,7 @@ public class SlangGen_Comp
 		validateCode(expectedCode, actualCode);
 	}
 
+	//Working
 	@Test public void SetComp2() throws AnalysisException
 	{
 		File file = new File("src/test/resources/Comprehensions/SetCompBlockStm.vdmpp");
@@ -96,6 +97,7 @@ public class SlangGen_Comp
 		validateCode(expectedCode, actualCode);
 	}
 
+	//TODO
 	@Test public void SetComp3() throws AnalysisException
 	{
 		File file = new File("src/test/resources/Comprehensions/SetCompSeqBind.vdmpp");
@@ -109,6 +111,19 @@ public class SlangGen_Comp
 		validateCode(expectedCode, actualCode);
 	}
 
+
+	@Test public void SeqComp() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Comprehensions/SeqCompBlockStm.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\nval x : Z = 5\nval y : B = true\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
 
 
 

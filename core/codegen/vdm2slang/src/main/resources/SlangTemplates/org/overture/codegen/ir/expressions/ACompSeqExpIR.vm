@@ -1,4 +1,4 @@
-#set( $set = $SlangFormat.formatSet($node.getBindings()))
-#set( $predVar = $SlangFormat.formatPredicateVar($node.getBindings()))
+#set( $set = $SlangFormat.format($node.getSetBind()))
+#set( $predVar = $SlangFormat.formatPredicateVar($node.getSetBind()))
 ##
 for (e <- ${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate())).map(${predVar} => $SlangFormat.format($node.getFirst())) yield e
