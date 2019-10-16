@@ -1,6 +1,6 @@
 #set( $package = "")
 #if (!$SlangFormat.isNull($node.getPackage()))
-    #set( $package = "package ${node.getPackage()};")
+    #set( $package = "package ${node.getPackage()}")
 #end
 ##
 $package
@@ -8,7 +8,7 @@ $package
 // #Sireum
 import org.sireum._
 #foreach( $dep in $node.getDependencies() )
-import ${SlangFormat.getString($dep)};
+import ${SlangFormat.getString($dep)}
 #end##
 
 $SlangFormat.formatMetaData($node.getGlobalMetaData())##

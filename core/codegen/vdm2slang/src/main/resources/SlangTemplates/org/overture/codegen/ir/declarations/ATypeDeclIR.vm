@@ -1,5 +1,5 @@
 #if ($SlangFormat.genDecl(${node}))
-	$node.getAccess() $SlangFormat.format(${node.getDecl()})
+	$SlangFormat.format(${node.getDecl()})
 #end
 ##
 #set( $inv = $node.getInv())

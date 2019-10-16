@@ -74,17 +74,17 @@ public class SlangTransSeries {
         IfExpTrans ifExpTr = new IfExpTrans(transAssist);
         PolyFuncTrans polyTr = new PolyFuncTrans(transAssist);
         FuncValTrans funcValTr = new FuncValTrans(transAssist, funcValAssist, funcValPrefixes);
-        ILanguageIterator langIte = new JavaLanguageIterator(transAssist, iteVarPrefixes);
-        LetBeStTrans letBeStTr = new LetBeStTrans(transAssist, langIte, iteVarPrefixes);
+        //ILanguageIterator langIte = new SlangLanguageIterator(transAssist, iteVarPrefixes);
+        //LetBeStTrans letBeStTr = new LetBeStTrans(transAssist, langIte, iteVarPrefixes);
         WhileStmTrans whileTr = new WhileStmTrans(transAssist, varMan.whileCond());
-        Exp2StmTrans exp2stmTr = new Exp2StmTrans(iteVarPrefixes, transAssist, consCounterData(), langIte, exp2stmPrefixes);
-        PatternTrans patternTr = new PatternTrans(iteVarPrefixes, transAssist, patternPrefixes, varMan.casesExp());
+        //This function makes the iterator
+       // Exp2StmTrans exp2stmTr = new Exp2StmTrans(iteVarPrefixes, transAssist, consCounterData(), langIte, exp2stmPrefixes);
+        //PatternTrans patternTr = new PatternTrans(iteVarPrefixes, transAssist, patternPrefixes, varMan.casesExp());
         //PreCheckTrans preCheckTr = new PreCheckTrans(transAssist, new JavaValueSemanticsTag(false));
         //PostCheckTrans postCheckTr = new PostCheckTrans(postCheckCreator, transAssist, varMan.funcRes(), new JavaValueSemanticsTag(false));
         //IsExpSimplifyTrans isExpSimplifyTr = new IsExpSimplifyTrans(transAssist);
         IsExpTrans isExpTr = new IsExpTrans(transAssist, varMan.isExpSubject());
         SeqConvTrans seqConvTr = new SeqConvTrans(transAssist);
-        //TracesTrans tracesTr = new TracesTrans(transAssist, iteVarPrefixes, tracePrefixes, langIte, new JavaCallStmToStringBuilder(), cloneFreeNodes);
         //UnionTypeTrans unionTypeTr = new UnionTypeTrans(transAssist, unionTypePrefixes, cloneFreeNodes);
         SlAccessTrans slAccessTr = new SlAccessTrans();
 
@@ -101,10 +101,10 @@ public class SlangTransSeries {
         series.add(prePostTr);
         series.add(ifExpTr);
         series.add(funcValTr);
-        series.add(letBeStTr);
+        //series.add(letBeStTr);
         series.add(whileTr);
-        series.add(exp2stmTr);
-        series.add(patternTr);
+        //series.add(exp2stmTr);
+        //series.add(patternTr);
 
         series.add(isExpTr);
         series.add(seqConvTr);

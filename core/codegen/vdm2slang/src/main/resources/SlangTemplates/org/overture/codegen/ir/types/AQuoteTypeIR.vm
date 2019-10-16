@@ -1,3 +1,2 @@
-#set( $packagePrefix = $SlangFormat.getQuotePackagePrefix() )
-##
-${packagePrefix}${node.getValue()}
+$node.getValue().Type
+//jeg er blevet kaldt

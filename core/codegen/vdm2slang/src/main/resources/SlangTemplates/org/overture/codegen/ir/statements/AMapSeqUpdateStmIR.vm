@@ -2,4 +2,4 @@
 #set( $index = $SlangFormat.format($node.getIndex()) )
 #set( $value = $SlangFormat.format($node.getValue()) )
 ##
-Utils.mapSeqUpdate(${col},${index},${value});
+Utils.mapSeqUpdate(${col},${index},${value})

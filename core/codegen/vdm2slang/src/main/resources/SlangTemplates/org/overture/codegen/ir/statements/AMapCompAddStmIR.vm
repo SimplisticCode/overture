@@ -1,4 +1,4 @@
 #set( $map = $SlangFormat.format($node.getMap()) )
 #set( $element = $SlangFormat.formatMapElement($node.getElement()) )
 ##
-MapUtil.mapAdd(${map},${element});
+MapUtil.mapAdd(${map},${element})

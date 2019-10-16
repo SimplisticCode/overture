@@ -5,14 +5,14 @@
 #set( $toVar = $SlangFormat.genForIndexToVarName() )
 #set( $bySpecified = !$SlangFormat.isNull($node.getBy()) )
 ##
-long ${toVar} = ${toExp};
+long ${toVar} = ${toExp}
 ##
 #set( $condition = "" )
 #set( $step = "" )
 ##
 #if ( $bySpecified == true )
 	#set($byVar = "$SlangFormat.genForIndexByVarName()" )
-	long ${byVar} =  $SlangFormat.formatIgnoreContext($node.getBy());
+	long ${byVar} =  $SlangFormat.formatIgnoreContext($node.getBy())
 	#set( $step = "${index} += ${byVar}" )
 	#set( $condition = "${byVar} < 0 ? ${index} >= ${toVar} : ${index} <= ${toVar}")
 #else

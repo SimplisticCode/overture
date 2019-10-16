@@ -1,0 +1,1 @@
+for (e <- $SlangFormat.formatSet($node.getBindings()).elements.filter($SlangFormat.format($node.getPredicate())).map($SlangFormat.format($node.getFirst()))) yield e

@@ -121,6 +121,32 @@ public class SlangGen_classes
 		validateCode(expectedCode, actualCode);
 	}
 
+	@Test public void worldcup() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Classes/worldcup.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void mapCompReturned() throws AnalysisException
+	{
+		File file = new File("src/test/resources/TestFromJava/MapCompReturned.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
 	private List<GeneratedModule> generateModules(File file)
 			throws AnalysisException
 	{

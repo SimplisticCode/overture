@@ -2,9 +2,9 @@ package org.overture.codegen.vdm2slang;
 
 import org.apache.log4j.Logger;
 import org.overture.ast.definitions.AStateDefinition;
+import org.overture.ast.expressions.AMapletExp;
 import org.overture.ast.expressions.AStringLiteralExp;
 import org.overture.ast.modules.AModuleModules;
-import org.overture.ast.types.ACharBasicType;
 import org.overture.ast.types.ARecordInvariantType;
 import org.overture.ast.util.ClonableString;
 import org.overture.codegen.assistant.AssistantBase;
@@ -15,6 +15,8 @@ import org.overture.codegen.ir.declarations.*;
 import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.patterns.ARecordPatternIR;
+import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
@@ -37,6 +39,7 @@ public class SlangFormat {
 
     private MergeVisitor codeEmitter;
     protected FuncValAssistant funcValAssist;
+    private SExpIR loopVariable;
 
     public SlangFormat(String root, IRInfo info) {
         TemplateCallable[] callables = new TemplateCallable[]{
@@ -74,6 +77,118 @@ public class SlangFormat {
 
     public String formatUnary(SExpIR exp) throws AnalysisException {
         return format(exp, false);
+    }
+
+
+    public String formatSet(ACompSetExpIR node) throws AnalysisException {
+        List<SMultipleBindIR> bindings = node.getBindings();
+        SExpIR predicate = node.getPredicate();
+        SExpIR loopVariable = node.getFirst();
+
+        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
+
+        return setComp.toString();
+    }
+
+    public String formatComp(ACompSetExpIR node) throws AnalysisException {
+        List<SMultipleBindIR> bindings = node.getBindings();
+        SExpIR predicate = node.getPredicate();
+        SExpIR loopVariable = node.getFirst();
+
+        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
+
+        return setComp.toString();
+    }
+
+    public String formatComp(ACompMapExpIR node) throws AnalysisException {
+        List<SMultipleBindIR> bindings = node.getBindings();
+        SExpIR predicate = node.getPredicate();
+        SExpIR loopVariable = node.getFirst().getLeft();
+
+        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
+
+        return setComp.toString();
+    }
+
+    public String getLoopVariable(AMapletExpIR node) throws AnalysisException {
+        return format(node.getLeft());
+    }
+
+
+    public String formatMapping(AMapletExpIR node) throws AnalysisException {
+        StringBuilder map = new StringBuilder();
+        map.append(format(node.getLeft()));
+        map.append(", ");
+        map.append(format(node.getRight()));
+
+        return map.toString();
+    }
+
+    private StringBuilder buildComp(List<SMultipleBindIR> bindings, SExpIR predicate, SExpIR loopVariable) throws AnalysisException {
+        StringBuilder setComp = new StringBuilder();
+
+
+
+        setComp.append(".elements");
+        if (predicate != null) {
+            setComp.append(".filter(");
+            setComp.append(format(loopVariable));
+            setComp.append("=>");
+            setComp.append(format(predicate));
+            setComp.append(")");
+        } return setComp;
+    }
+
+    public String formatRecordPattern(ARecordPatternIR record) {
+        return record.getTypename().toLowerCase();
+    }
+
+
+    public String formatUnionTypes(List<AQuoteTypeIR> quotes) {
+        String NEWLINE = "\n";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (AQuoteTypeIR quote : quotes) {
+            stringBuilder.append("'" + quote.getValue());
+            stringBuilder.append(NEWLINE);
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public String formatUnionType(AUnionTypeIR node) {
+        return "";//node.getNamedInvType().getName().getName() + ".Type";
+    }
+
+    public String HandleExists(AExistsQuantifierExpIR node) throws AnalysisException {
+        List<SMultipleBindIR> bindings = node.getBindList();
+        SExpIR predicate = node.getPredicate();
+        SExpIR loopVariable = formatPredicate(predicate);
+        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
+
+        return setComp.toString();
+    }
+
+    private SExpIR formatPredicate(SExpIR predicate) {
+        SExpIR loopVariable = null;
+        if(predicate instanceof ASetSubsetBinaryExpIR){
+            loopVariable = ((ASetSubsetBinaryExpIR) predicate).getRight();
+        }else if(predicate instanceof AEqualsBinaryExpIR){
+            loopVariable = ((AEqualsBinaryExpIR) predicate).getRight();
+        }else if(predicate instanceof AAndBoolBinaryExpIR){
+            loopVariable = ((AAndBoolBinaryExpIR) predicate).getRight();
+        }else{
+            loopVariable = ((AAndBoolBinaryExpIR) predicate).getRight();
+        }
+
+
+        return loopVariable;
+
+    }
+
+
+    public String formatQuote(AQuoteLiteralExpIR quote){
+        return quote.getValue();
     }
 
 
@@ -154,7 +269,7 @@ public class SlangFormat {
 
     public String formatTypeName(INode node, ATypeNameIR typeName) {
         // Type names are also used for quotes, which do not have a defining class.
-        if (typeName.getDefiningClass() != null &&  !(node instanceof ARecordTypeIR)) {
+        if (typeName.getDefiningClass() != null && !(node instanceof ARecordTypeIR)) {
             String typeNameStr = "";
 
             typeNameStr += typeName.getDefiningClass();
@@ -245,7 +360,7 @@ public class SlangFormat {
 
     private String handleEquals(AEqualsBinaryExpIR valueType)
             throws AnalysisException {
-        return String.format("%s.equals(%s, %s)", format(valueType.getLeft()), format(valueType.getRight()));
+        return String.format("%s.equals(%s)", format(valueType.getLeft()), format(valueType.getRight()));
     }
 
     public String findModifier(Boolean isFinal) throws AnalysisException {
@@ -277,7 +392,7 @@ public class SlangFormat {
     public String format(INode node) throws AnalysisException {
         StringWriter writer = new StringWriter();
 
-        if(isCollectionType(node))
+        if (isCollectionType(node))
             return handleCollection(node);
 
         node.apply(codeEmitter, writer);
@@ -286,20 +401,20 @@ public class SlangFormat {
     }
 
     private String handleCollection(INode node) throws AnalysisException {
-        if(node instanceof ASeqSeqTypeIR){
-            if(((ASeqSeqTypeIR) node).getSeqOf() instanceof ACharBasicTypeIR){
+        if (node instanceof ASeqSeqTypeIR) {
+            if (((ASeqSeqTypeIR) node).getSeqOf() instanceof ACharBasicTypeIR) {
                 return "String";
             }
             String seqType = format(((ASeqSeqTypeIR) node).getSeqOf());
-            return  "Seq[" + seqType + "]";
+            return "Seq[" + seqType + "]";
 
         }
-        if(node instanceof AMapMapTypeIR){
+        if (node instanceof AMapMapTypeIR) {
             String toType = format(((AMapMapTypeIR) node).getTo());
             String fromType = format(((AMapMapTypeIR) node).getFrom());
-            return  "Map[" + fromType + ", "+ toType + "]";
+            return "Map[" + fromType + ", " + toType + "]";
         }
-        if(node instanceof ASetSetTypeIR){
+        if (node instanceof ASetSetTypeIR) {
             String setType = format(((ASetSetTypeIR) node).getSetOf());
             return "Set[" + setType + "]";
         }
@@ -320,7 +435,6 @@ public class SlangFormat {
         }
 
         StringWriter writer = new StringWriter();
-
 
         AFieldDeclIR firstParam = fields.get(0);
         firstParam.setFinal(true);
@@ -384,8 +498,7 @@ public class SlangFormat {
         }
     }
 
-    public boolean isUndefined(ACastUnaryExpIR cast)
-    {
+    public boolean isUndefined(ACastUnaryExpIR cast) {
         return info.getExpAssistant().isUndefined(cast);
     }
 
@@ -414,7 +527,7 @@ public class SlangFormat {
         }
         SStmIR exp = ((AMethodDeclIR) cond).getBody();
         //A pre/post condition should not contain a return
-        String condExp = format(exp).replace("return","").trim();
+        String condExp = format(exp).replace("return", "").trim();
         String conditions = String.format("%s %s\n", prepost, condExp);
         return conditions;
     }

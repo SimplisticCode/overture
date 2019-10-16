@@ -1,4 +1,4 @@
 #set( $seq = $SlangFormat.format($node.getSeq()) )
 #set( $element = $SlangFormat.format($node.getElement()) )
 ##
-${seq} = ${seq} + ${element};
+${seq} = ${seq} + ${element}
