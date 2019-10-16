@@ -1,1 +1,4 @@
-Map.empty ++ (for ($SlangFormat.getLoopVariable($node.getFirst()) <- $SlangFormat.formatComp($node)) yield ($SlangFormat.formatMapping($node.getFirst()))).elements
+#set( $set = $SlangFormat.formatSet($node.getBindings()))
+#set( $predVar = $SlangFormat.formatPredicateVar($node.getBindings()))
+##
+Map.empty ++ (for (${predVar} <- ${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate()))) yield ($SlangFormat.formatMapping($node.getFirst()))).elements

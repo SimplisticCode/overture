@@ -5,6 +5,7 @@ import org.overture.ast.definitions.AStateDefinition;
 import org.overture.ast.expressions.AMapletExp;
 import org.overture.ast.expressions.AStringLiteralExp;
 import org.overture.ast.modules.AModuleModules;
+import org.overture.ast.patterns.ASetMultipleBind;
 import org.overture.ast.types.ARecordInvariantType;
 import org.overture.ast.util.ClonableString;
 import org.overture.codegen.assistant.AssistantBase;
@@ -80,40 +81,16 @@ public class SlangFormat {
     }
 
 
-    public String formatSet(ACompSetExpIR node) throws AnalysisException {
-        List<SMultipleBindIR> bindings = node.getBindings();
-        SExpIR predicate = node.getPredicate();
-        SExpIR loopVariable = node.getFirst();
-
-        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
-
-        return setComp.toString();
-    }
-
-    public String formatComp(ACompSetExpIR node) throws AnalysisException {
-        List<SMultipleBindIR> bindings = node.getBindings();
-        SExpIR predicate = node.getPredicate();
-        SExpIR loopVariable = node.getFirst();
-
-        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
+    public String formatSet(List<SMultipleBindIR> bindings) throws AnalysisException {
+        StringBuilder setComp = new StringBuilder();
+        for(SMultipleBindIR bind: bindings){
+            if(bind instanceof ASetMultipleBindIR){
+                setComp.append(format(((ASetMultipleBindIR) bind).getSet()));
+            }
+        }
 
         return setComp.toString();
     }
-
-    public String formatComp(ACompMapExpIR node) throws AnalysisException {
-        List<SMultipleBindIR> bindings = node.getBindings();
-        SExpIR predicate = node.getPredicate();
-        SExpIR loopVariable = node.getFirst().getLeft();
-
-        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
-
-        return setComp.toString();
-    }
-
-    public String getLoopVariable(AMapletExpIR node) throws AnalysisException {
-        return format(node.getLeft());
-    }
-
 
     public String formatMapping(AMapletExpIR node) throws AnalysisException {
         StringBuilder map = new StringBuilder();
@@ -124,20 +101,7 @@ public class SlangFormat {
         return map.toString();
     }
 
-    private StringBuilder buildComp(List<SMultipleBindIR> bindings, SExpIR predicate, SExpIR loopVariable) throws AnalysisException {
-        StringBuilder setComp = new StringBuilder();
 
-
-
-        setComp.append(".elements");
-        if (predicate != null) {
-            setComp.append(".filter(");
-            setComp.append(format(loopVariable));
-            setComp.append("=>");
-            setComp.append(format(predicate));
-            setComp.append(")");
-        } return setComp;
-    }
 
     public String formatRecordPattern(ARecordPatternIR record) {
         return record.getTypename().toLowerCase();
@@ -160,30 +124,11 @@ public class SlangFormat {
         return "";//node.getNamedInvType().getName().getName() + ".Type";
     }
 
-    public String HandleExists(AExistsQuantifierExpIR node) throws AnalysisException {
-        List<SMultipleBindIR> bindings = node.getBindList();
-        SExpIR predicate = node.getPredicate();
-        SExpIR loopVariable = formatPredicate(predicate);
-        StringBuilder setComp = buildComp(bindings, predicate, loopVariable);
-
-        return setComp.toString();
-    }
-
-    private SExpIR formatPredicate(SExpIR predicate) {
-        SExpIR loopVariable = null;
-        if(predicate instanceof ASetSubsetBinaryExpIR){
-            loopVariable = ((ASetSubsetBinaryExpIR) predicate).getRight();
-        }else if(predicate instanceof AEqualsBinaryExpIR){
-            loopVariable = ((AEqualsBinaryExpIR) predicate).getRight();
-        }else if(predicate instanceof AAndBoolBinaryExpIR){
-            loopVariable = ((AAndBoolBinaryExpIR) predicate).getRight();
-        }else{
-            loopVariable = ((AAndBoolBinaryExpIR) predicate).getRight();
+    public String formatPredicateVar (List<SMultipleBindIR> bindings) throws AnalysisException{
+        for(SMultipleBindIR bind: bindings){
+            return (format(bind.getPatterns().getFirst()));
         }
-
-
-        return loopVariable;
-
+        return "";
     }
 
 
@@ -406,7 +351,7 @@ public class SlangFormat {
                 return "String";
             }
             String seqType = format(((ASeqSeqTypeIR) node).getSeqOf());
-            return "Seq[" + seqType + "]";
+            return "ISZ[" + seqType + "]";
 
         }
         if (node instanceof AMapMapTypeIR) {

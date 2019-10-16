@@ -1,1 +1,1 @@
-MapUtil.CreateMap($SlangFormat.formatArgs($node.getMembers())
+Map.empty ++ ($SlangFormat.formatArgs($node.getMembers())

@@ -1,1 +1,4 @@
-($SlangFormat.HandleExists($node)).nonEmpty
+#set( $set = $SlangFormat.formatSet($node.getBindList()))
+#set( $predVar = $SlangFormat.formatPredicateVar($node.getBindList()))
+##
+(${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate())) yield e).nonEmpty
