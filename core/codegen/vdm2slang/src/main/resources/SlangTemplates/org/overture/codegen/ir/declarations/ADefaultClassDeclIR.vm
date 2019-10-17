@@ -23,6 +23,15 @@ class $node.getName()
 #**#$SlangFormat.format($f)
 #**##end
 
+#foreach( $typeDecl in $node.getTypeDecls() )
+    #if ($SlangFormat.isEnum($typeDecl))
+        $SlangFormat.formatEnum($typeDecl.getDecl())
+    #end
+    #if ($SlangFormat.genTypeDecl($typeDecl))
+        $SlangFormat.format($typeDecl)
+    #end
+#end
+
 #**##foreach($method in $node.getMethods() )
 #**#$SlangFormat.format($method)
 #**##end
@@ -37,11 +46,5 @@ class $node.getName()
 ##
 #if ($SlangFormat.genClassInvariant($node))
     $SlangFormat.format($node.getInvariant())
-#end
-
-#foreach( $typeDecl in $node.getTypeDecls() )
-    #if ($SlangFormat.genTypeDecl($typeDecl))
-        $SlangFormat.format($typeDecl)
-    #end
 #end
 }

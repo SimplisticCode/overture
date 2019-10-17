@@ -114,21 +114,31 @@ public class SlangFormat {
         return record.getTypename().toLowerCase();
     }
 
-    public String formatUnionType(AUnionTypeIR node) {
-        if (node.parent() instanceof ADefaultClassDeclIR) {
-            String NEWLINE = "\n";
-            List<STypeIR> quotes = node.getTypes();
-            StringBuilder stringBuilder = new StringBuilder();
-            for (STypeIR quote : quotes) {
-                if (quote instanceof AQuoteTypeIR) {
-                    AQuoteTypeIR quoteType = (AQuoteTypeIR) quote;
-                    stringBuilder.append("'" + quoteType.getValue());
-                    stringBuilder.append(NEWLINE);
-                }
-            }
 
-            return stringBuilder.toString();
+    public String formatEnum(ANamedTypeDeclIR node) {
+        if (!(node.getType() instanceof AUnionTypeIR)) {
+            return "";
         }
+        AUnionTypeIR union = (AUnionTypeIR) node.getType();
+        String NEWLINE = "\n";
+        List<STypeIR> quotes = union.getTypes();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("@enum object ");
+        stringBuilder.append(node.getName());
+        stringBuilder.append("{" + NEWLINE);
+        for (STypeIR quote : quotes) {
+            if (quote instanceof AQuoteTypeIR) {
+                AQuoteTypeIR quoteType = (AQuoteTypeIR) quote;
+                stringBuilder.append("'" + quoteType.getValue());
+                stringBuilder.append(NEWLINE);
+            }
+        }
+        stringBuilder.append("}");
+
+        return stringBuilder.toString();
+    }
+
+    public String formatUnionType(AUnionTypeIR node) {
         return node.getNamedInvType().getName().getName() + ".Type";
     }
 
@@ -519,14 +529,16 @@ public class SlangFormat {
     public boolean genTypeDecl(ATypeDeclIR node) {
         if (node.getDecl() instanceof ARecordDeclIR) {
             return getSlangSettings().genRecsAsInnerClasses();
-        } else if (node.getDecl() instanceof AUnionTypeIR) {
-            return true;
-
-            //AUnionTypeIR union = (AUnionTypeIR) node.getDecl();
-            //return formatUnionType(union);
         } else {
             return info.getSettings().generateInvariants();
         }
+    }
+
+    public boolean isEnum(ATypeDeclIR node) {
+        if (node.getDecl() instanceof ANamedTypeDeclIR) {
+            return ((ANamedTypeDeclIR) node.getDecl()).getType() instanceof AUnionTypeIR;
+        }
+        return false;
     }
 
     public String buildString(List<SExpIR> exps) throws AnalysisException {
