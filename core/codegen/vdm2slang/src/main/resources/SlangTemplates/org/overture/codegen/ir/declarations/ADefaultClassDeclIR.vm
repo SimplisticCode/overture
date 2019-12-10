@@ -3,10 +3,10 @@
     #set( $package = "package ${node.getPackage()}")
 #end
 ##
-$package
 ##
 // #Sireum
 import org.sireum._
+$package
 #foreach( $dep in $node.getDependencies() )
 import ${SlangFormat.getString($dep)}
 #end##

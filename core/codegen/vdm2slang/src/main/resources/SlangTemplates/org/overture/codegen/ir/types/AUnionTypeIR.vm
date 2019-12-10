@@ -1,1 +1,1 @@
-$SlangFormat.formatUnionType($node)
+halt("not implemented")

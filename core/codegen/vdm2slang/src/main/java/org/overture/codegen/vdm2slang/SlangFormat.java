@@ -83,8 +83,11 @@ public class SlangFormat {
         return format(exp, false);
     }
 
-    public String formatCollection(List<SMultipleBindIR> bindings) throws AnalysisException {
+    //Does only handle one binding
+    public String formatCollection(List<SMultipleBindIR> bindings) throws Exception {
         StringBuilder setComp = new StringBuilder();
+        if(bindings.size() > 1)
+            throw new Exception("Multiple binding are not handled by translator");
         for (SMultipleBindIR bind : bindings) {
             if (bind instanceof ASetMultipleBindIR) {
                 setComp.append(format(((ASetMultipleBindIR) bind).getSet()));

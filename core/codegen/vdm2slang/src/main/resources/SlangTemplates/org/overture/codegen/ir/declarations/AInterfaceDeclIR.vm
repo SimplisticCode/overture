@@ -1,0 +1,26 @@
+#set( $package = "")
+#set( $packageName = $node.getPackage())
+#if (!$SlangFormat.isNull($packageName))
+	#set( $package = "package ${packageName};")
+#end
+##
+#set( $templateTypes = "")
+#if ($node.getTemplateTypes().size() > 0)
+	#set( $templateTypes = $SlangFormat.formatTemplateTypes($node.getTemplateTypes()))
+#end
+##
+//#Sireum
+$package
+
+import org.sireum._
+
+@msid trait $node.getName() $templateTypes $SlangFormat.formatInterfaces($node)
+{
+#foreach( $field in $node.getFields() )
+$SlangFormat.format($field)
+#end
+##
+#foreach( $methodSig in $node.getMethodSignatures() )
+$SlangFormat.format($methodSig)
+#end
+}
