@@ -2,8 +2,6 @@
 #set( $var = $SlangFormat.format($node.getPattern()) )
 #set( $elementType = $SlangFormat.formatElementType($node.getExp().getType()) )
 #set( $body = $SlangFormat.format($node.getBody()) )
-##
-## We cast $exp to in case it is masked by a union type
 for (elem <- ${exp}.elements)
 {
 	${elementType} ${var} = (${elementType})

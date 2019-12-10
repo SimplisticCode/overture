@@ -26,6 +26,7 @@ import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 
+import javax.enterprise.inject.New;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
@@ -429,6 +430,11 @@ public class SlangFormat {
         return writer.toString();
     }
 
+    public String formatOperationBody(Object a) throws AnalysisException {
+        return "a";
+    }
+
+
     public String formatOperationBody(SExpIR body) throws AnalysisException {
         String NEWLINE = "\n";
         if (body == null) {
@@ -441,23 +447,41 @@ public class SlangFormat {
         AFuncDeclIR func = body.getAncestor(AFuncDeclIR.class);
         SDeclIR preConditions = func.getPreCond();
         SDeclIR postConditions = func.getPostCond();
-
-        formatPrePostSection(NEWLINE, generatedBody, preConditions, postConditions);
+        generateContract(NEWLINE, generatedBody, preConditions, postConditions);
 
         generatedBody.append(formatUnary(body));
         generatedBody.append(NEWLINE + "}");
 
+
+
         return generatedBody.toString();
     }
 
-    private void formatPrePostSection(String NEWLINE, StringWriter generatedBody, SDeclIR preConditions, SDeclIR postConditions) throws AnalysisException {
-        if (preConditions != null || postConditions != null) {
-            generatedBody.append("l\"\"\"{" + NEWLINE);
-            generatedBody.append(formatCond(preConditions, "pre"));
-            generatedBody.append(formatCond(postConditions, "post"));
-            generatedBody.append("\"\"\"}" + NEWLINE);
+    public String genClassInvariant(ADefaultClassDeclIR node){
+        if(node.getInvariant() == null){
+            return "";
         }
+        return "in";
     }
+
+    public void generateContract(String NEWLINE, StringWriter generatedBody, SDeclIR preConditions, SDeclIR postConditions) throws AnalysisException {
+        if (preConditions != null || postConditions != null) {
+            generatedBody.append("Contract(" + NEWLINE);
+            if (preConditions != null) {
+                generatedBody.append("Requires(" + NEWLINE);
+                generatedBody.append(formatCond(preConditions));
+                generatedBody.append(")" + NEWLINE);
+            }
+            if (postConditions != null) {
+                generatedBody.append("Ensures(" + NEWLINE);
+                generatedBody.append(formatCond(postConditions));
+                generatedBody.append(")" + NEWLINE);
+            }
+            generatedBody.append(")" + NEWLINE);
+        }
+
+    }
+
 
     public boolean isUndefined(ACastUnaryExpIR cast) {
         return info.getExpAssistant().isUndefined(cast);
@@ -475,22 +499,26 @@ public class SlangFormat {
         AMethodDeclIR func = body.getAncestor(AMethodDeclIR.class);
         SDeclIR preConditions = func.getPreCond();
         SDeclIR postConditions = func.getPostCond();
-        formatPrePostSection(NEWLINE, generatedBody, preConditions, postConditions);
+        generateContract(NEWLINE, generatedBody, preConditions, postConditions);
         generatedBody.append(handleOpBody(body));
         generatedBody.append(NEWLINE + "}");
 
         return generatedBody.toString();
     }
 
-    public String formatCond(SDeclIR cond, String prepost) throws AnalysisException {
-        if (cond == null) {
-            return "";
+    public String formatCond(SDeclIR cond) throws AnalysisException {
+        String conditionString = "";
+        if(cond instanceof AMethodDeclIR){
+            SStmIR exp = ((AMethodDeclIR) cond).getBody();
+            //A pre/post condition should not contain a return
+            conditionString = format(exp);
         }
-        SStmIR exp = ((AMethodDeclIR) cond).getBody();
-        //A pre/post condition should not contain a return
-        String condExp = format(exp).replace("return", "").trim();
-        String conditions = String.format("%s %s\n", prepost, condExp);
-        return conditions;
+        if(cond instanceof AFuncDeclIR){
+            SExpIR exp = ((AFuncDeclIR) cond).getBody();
+            //A pre/post condition should not contain a return
+            conditionString = format(exp);
+        }
+        return conditionString.trim().replace("&", ",\t").replace("return", "").trim();
     }
 
     private String handleOpBody(SStmIR body) throws AnalysisException {

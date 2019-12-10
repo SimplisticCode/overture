@@ -7,5 +7,5 @@ $SlangFormat.formatVdmSource($node)##
 ##
 $SlangFormat.formatMetaData($node.getMetaData())##
 ##
-def $node.getName()(${params}):$returnType
+def $node.getName()(${params}):$returnType=
 $body

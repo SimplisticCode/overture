@@ -62,27 +62,17 @@ public class SlangTransSeries {
         // Construct the transformations
         RenamedTrans renamedTr = new RenamedTrans(transAssist);
         //ModuleRenamerTrans moduleRenamerTr = new ModuleRenamerTrans(transAssist);
-        //UnsupportedLibWarningTrans libWarnTr = new UnsupportedLibWarningTrans(transAssist);
         FieldOrderTrans fieldOrderTr = new FieldOrderTrans();
         AtomicStmTrans atomicTr = new AtomicStmTrans(transAssist, varMan.atomicTmpVar());
         NonDetStmTrans nonDetTr = new NonDetStmTrans(transAssist);
-        FuncTrans funcTr = new FuncTrans(transAssist);
         DivideTrans divideTr = new DivideTrans(info);
         CallObjStmTrans callObjTr = new CallObjStmTrans(info);
         AssignStmTrans assignTr = new AssignStmTrans(transAssist);
-        PrePostTrans prePostTr = new PrePostTrans(info);
         IfExpTrans ifExpTr = new IfExpTrans(transAssist);
         PolyFuncTrans polyTr = new PolyFuncTrans(transAssist);
         FuncValTrans funcValTr = new FuncValTrans(transAssist, funcValAssist, funcValPrefixes);
-        //ILanguageIterator langIte = new SlangLanguageIterator(transAssist, iteVarPrefixes);
         //LetBeStTrans letBeStTr = new LetBeStTrans(transAssist, langIte, iteVarPrefixes);
         WhileStmTrans whileTr = new WhileStmTrans(transAssist, varMan.whileCond());
-        //This function makes the iterator
-       // Exp2StmTrans exp2stmTr = new Exp2StmTrans(iteVarPrefixes, transAssist, consCounterData(), langIte, exp2stmPrefixes);
-        //PatternTrans patternTr = new PatternTrans(iteVarPrefixes, transAssist, patternPrefixes, varMan.casesExp());
-        //PreCheckTrans preCheckTr = new PreCheckTrans(transAssist, new JavaValueSemanticsTag(false));
-        //PostCheckTrans postCheckTr = new PostCheckTrans(postCheckCreator, transAssist, varMan.funcRes(), new JavaValueSemanticsTag(false));
-        //IsExpSimplifyTrans isExpSimplifyTr = new IsExpSimplifyTrans(transAssist);
         IsExpTrans isExpTr = new IsExpTrans(transAssist, varMan.isExpSubject());
         SeqConvTrans seqConvTr = new SeqConvTrans(transAssist);
         //UnionTypeTrans unionTypeTr = new UnionTypeTrans(transAssist, unionTypePrefixes, cloneFreeNodes);
@@ -97,8 +87,8 @@ public class SlangTransSeries {
         series.add(assignTr);
         series.add(callObjTr);
         series.add(polyTr);
-        series.add(funcTr);
-        series.add(prePostTr);
+        //series.add(funcTr);
+        //series.add(prePostTr);
         series.add(ifExpTr);
         series.add(funcValTr);
         //series.add(letBeStTr);

@@ -1,1 +1,1 @@
-$Slangformat.format($node.getExp()) isInstanceof[$Slangformat.format($node.getCheckedType())]
+$Slangformat.format($node.getExp()) isInstanceof [$Slangformat.format($node.getCheckedType())]

@@ -8,7 +8,7 @@ Run () ==
 		
 public static Test : () ==> set of nat 
 Test () ==
-let x = { x * 2 | x in set elems [1,2,3] & x mod 2 = 0 }
+let x = {x | x in set {2,3,6,4,1,10,23,24,63} & x < 10 and x mod 2 = 0}
 in
 	return x;
 
