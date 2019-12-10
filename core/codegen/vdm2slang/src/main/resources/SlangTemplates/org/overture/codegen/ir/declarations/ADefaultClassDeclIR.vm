@@ -13,15 +13,9 @@ import ${SlangFormat.getString($dep)}
 
 $SlangFormat.formatMetaData($node.getGlobalMetaData())##
 
-class $node.getName()
-{
 #foreach( $class in $node.getInnerClasses() )
     $SlangFormat.format($class)
 #end##
-
-#**##foreach( $f in $node.getFields() )
-#**#$SlangFormat.format($f)
-#**##end
 
 #foreach( $typeDecl in $node.getTypeDecls() )
     #if ($SlangFormat.isEnum($typeDecl))
@@ -31,6 +25,13 @@ class $node.getName()
         $SlangFormat.format($typeDecl)
     #end
 #end
+
+@record class $node.getName()
+{
+
+#**##foreach( $f in $node.getFields() )
+#**#$SlangFormat.format($f)
+#**##end
 
 #**##foreach($method in $node.getMethods() )
 #**#$SlangFormat.format($method)

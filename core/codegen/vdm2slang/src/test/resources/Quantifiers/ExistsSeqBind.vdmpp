@@ -2,7 +2,7 @@ class Entry
 
 operations
 
-public static Run: () ==> ?
+public static Run: () ==> bool
 Run() == return exists x in seq [1] & x = 1;
 
 end Entry

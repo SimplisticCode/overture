@@ -18,6 +18,7 @@ import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.patterns.ARecordPatternIR;
+import org.overture.codegen.ir.patterns.ASeqMultipleBindIR;
 import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.*;
@@ -82,11 +83,13 @@ public class SlangFormat {
         return format(exp, false);
     }
 
-    public String formatSet(List<SMultipleBindIR> bindings) throws AnalysisException {
+    public String formatCollection(List<SMultipleBindIR> bindings) throws AnalysisException {
         StringBuilder setComp = new StringBuilder();
         for (SMultipleBindIR bind : bindings) {
             if (bind instanceof ASetMultipleBindIR) {
                 setComp.append(format(((ASetMultipleBindIR) bind).getSet()));
+            } else if (bind instanceof ASeqMultipleBindIR) {
+                setComp.append(format(((ASeqMultipleBindIR) bind).getSeq()));
             }
         }
 
@@ -430,11 +433,6 @@ public class SlangFormat {
         return writer.toString();
     }
 
-    public String formatOperationBody(Object a) throws AnalysisException {
-        return "a";
-    }
-
-
     public String formatOperationBody(SExpIR body) throws AnalysisException {
         String NEWLINE = "\n";
         if (body == null) {
@@ -451,8 +449,6 @@ public class SlangFormat {
 
         generatedBody.append(formatUnary(body));
         generatedBody.append(NEWLINE + "}");
-
-
 
         return generatedBody.toString();
     }
