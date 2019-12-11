@@ -72,6 +72,100 @@ public class Expressions
 		validateCode(expectedCode, slangCode);
 	}
 
+	@Test public void InverseOfProduct() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/InverseOfProduct.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "Utils.divide((1.0 * 1), 1 * 2 * 3)";
+		validateCode(expectedCode, slangCode);
+	}
+
+
+	@Test public void InverseOfSum() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/InverseOfSum.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "Utils.divide((1.0 * 1), 1 + 1 + 1)";
+		validateCode(expectedCode, slangCode);
+	}
+
+
+	@Test public void SetCard() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetCardNatSet.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)).size";
+		validateCode(expectedCode, slangCode);
+	}
+
+	@Test public void SetDifference() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetDifferenceNatSets.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "SetUtil.SetDifference(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)), SetUtil.CreateSetFromSeq(ISZ(2, 3)))";
+		validateCode(expectedCode, slangCode);
+	}
+
+	@Test public void SetInSet() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetInSet.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)).contains(4)";
+		validateCode(expectedCode, slangCode);
+	}
+
+	@Test public void SetNotInSet() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetNotInSet.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "!(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)).contains(4))";
+		validateCode(expectedCode, slangCode);
+	}
+
+	@Test public void SetEqual() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetEqual.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "!true";
+		validateCode(expectedCode, slangCode);
+	}
+
+	@Test public void SubSet() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Set/SetSubsetNatSet.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "SetUtil.Subset(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)), SetUtil.CreateSetFromSeq(ISZ(1, 2, 3, 4)))";
+		validateCode(expectedCode, slangCode);
+	}
+
+
+	@Test public void SeqConc() throws Exception
+	{
+		File file = new File("src/test/resources/Expressions/Sequences/SeqConcatenationExp.vdmpp");
+
+		String slangCode = generateSlangCode(file);
+
+		String expectedCode = "ISZ(1, 2, 3) ++ ISZ(4, 5, 6)";
+		validateCode(expectedCode, slangCode);
+	}
+
+
 
 	private void validateCode(String expectedCode, String actualCode)
 	{

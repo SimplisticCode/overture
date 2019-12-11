@@ -1,0 +1,5 @@
+#if ($SlangFormat.isStringType($node.getType()) && $SlangFormat.isStringType($node.getLeft().getType()) && $SlangFormat.isStringType($node.getRight().getType()))
+	$SlangFormat.format($node.getLeft(), true) + $SlangFormat.format($node.getRight(), false)
+#else
+	$SlangFormat.format($node.getLeft()) ++ $SlangFormat.format($node.getRight())
+#end
