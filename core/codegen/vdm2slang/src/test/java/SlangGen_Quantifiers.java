@@ -69,6 +69,33 @@ public class SlangGen_Quantifiers
 		validateCode(expectedCode, actualCode);
 	}
 
+	@Test public void NestedQuantifiers() throws Exception
+	{
+		File file = new File("src/test/resources/Quantifiers/NestExistsForall.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = readFileAsString("src/test/resources/ResultFiles/NextExistsForall.scala");
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void NestedQuantifiers1() throws Exception
+	{
+		File file = new File("src/test/resources/Quantifiers/ExistExpTransformedCond.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		assertSingleClass(classes);
+
+		String expectedCode = readFileAsString("src/test/resources/ResultFiles/ForAllExpBlockStm.scala");
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+
 
 
 	private void validateCode(String expectedCode, String actualCode)
@@ -90,6 +117,17 @@ public class SlangGen_Quantifiers
 		GeneratedData data = codeGen.generate(nodes);
 
 		return data.getClasses();
+	}
+
+	@Test public void ifExp() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Conditionals/IfExp.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "def absfunct(x : Z):Z =\nif(x < 0) -x else x\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
 	}
 
 	public static String readFileAsString(String fileName)throws Exception

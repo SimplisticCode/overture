@@ -2,6 +2,7 @@ import junit.framework.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
@@ -37,6 +38,8 @@ public class SlangGen_Conditionals
 		validateCode(expectedCode, actualCode);
 	}
 
+
+
 	@Test public void less() throws AnalysisException
 	{
 		File file = new File("src/test/resources/Conditionals/less.vdmpp");
@@ -48,6 +51,18 @@ public class SlangGen_Conditionals
 		validateCode(expectedCode, actualCode);
 	}
 
+	@Test public void ifExp() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Conditionals/IfExp.vdmpp");
+
+		List<GeneratedModule> classes = generateClasses(file);
+
+		String expectedCode = "def absfunct(x : Z):Z =\nif(x < 0) -x else x\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+
 	private void validateCode(String expectedCode, String actualCode)
 	{
 		Assert.assertEquals("Got unexpected code", expectedCode, actualCode);
@@ -56,6 +71,7 @@ public class SlangGen_Conditionals
 	private List<GeneratedModule> generateModules(File file)
 			throws AnalysisException
 	{
+		Settings.dialect = Dialect.VDM_SL;
 		TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
 
 		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
@@ -68,6 +84,23 @@ public class SlangGen_Conditionals
 
 		return data.getClasses();
 	}
+
+	private List<GeneratedModule> generateClasses(File file)
+			throws AnalysisException
+	{
+		TypeCheckerUtil.TypeCheckResult<List<SClassDefinition>> tcResult = TypeCheckerUtil.typeCheckPp(file);
+
+		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
+		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());
+
+		SlangGen codeGen = new SlangGen();
+
+		List<INode> nodes = CodeGenBase.getNodes(tcResult.result);
+		GeneratedData data = codeGen.generate(nodes);
+
+		return data.getClasses();
+	}
+
 
 	private void assertSingleClass(List<GeneratedModule> classes)
 	{

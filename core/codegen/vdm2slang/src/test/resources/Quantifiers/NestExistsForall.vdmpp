@@ -1,0 +1,35 @@
+class GroupPhase
+
+types
+public Team = <Brazil> | <Norway> | <Morocco> | <Scotland> |
+       <Italy> | <Chile> | <Austria> | <Cameroon> |
+       <France> | <Denmark> | <SouthAfrica> | <SaudiArabia> |
+       <Nigeria> | <Paraguay> | <Spain> | <Bulgaria> |
+       <Holland> | <Mexico> | <Belgium> | <SouthKorea> |
+       <Germany> | <Yugoslavia> | <Iran> | <UnitedStates> |
+       <Rumania> | <England> | <Colombia> | <Tunisia> |
+       <Argentina> | <Croatia> | <Jamaica> | <Japan>;
+
+public GroupName = <A> | <B> | <C> | <D> | <E> | <F> | <G> | <H>;
+
+
+Score :: team : Team
+         won : nat
+         drawn : nat
+         lost : nat
+         points : nat
+inv sc == sc.points = 3 * sc.won + sc.drawn;
+
+
+functions
+
+sc_init : set of Team -> set of Score
+sc_init (ts) ==
+  { mk_Score (t,0,0,0,0) | t in set ts };
+
+clear_winner : set of Score -> bool
+clear_winner (scs) ==
+  exists sc in set scs &
+    forall sc' in set scs \ {sc} & sc.points > sc'.points;
+
+end GroupPhase

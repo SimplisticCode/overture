@@ -1,4 +1,8 @@
 #set( $set = $SlangFormat.formatCollection($node.getBindings()))
 #set( $predVar = $SlangFormat.formatPredicateVar($node.getBindings()))
+#set ($predicate = "true")
+#if (!$SlangFormat.isNull($node.getPredicate())){
+    #set( $predicate = $SlangFormat.format($node.getPredicate()))
+#end}
 ##
-Set.empty ++ (${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate())).map(${predVar} => $SlangFormat.format($node.getFirst())))
+Set.empty ++ ${set}.elements.filter(${predVar} => ${predicate}).map(${predVar} => $SlangFormat.format($node.getFirst()))
