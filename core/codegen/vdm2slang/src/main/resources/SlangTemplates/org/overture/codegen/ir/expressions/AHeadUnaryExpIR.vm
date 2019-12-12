@@ -1,0 +1,9 @@
+#set( $exp = $SlangFormat.format($node.getExp()))
+##
+#if ($SlangFormat.isStringType($node.getExp().getType()))
+	#set( $getCall = ".charAt(0)")
+	${exp}${getCall}
+#else
+	#set ($call = "ISZOps(${exp}).first")
+		${call}
+#end

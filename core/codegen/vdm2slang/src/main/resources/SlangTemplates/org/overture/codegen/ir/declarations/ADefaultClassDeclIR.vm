@@ -10,6 +10,7 @@ $package
 #foreach( $dep in $node.getDependencies() )
 import ${SlangFormat.getString($dep)}
 #end##
+#set( $argumets = $SlangFormat.getConstructorArguments($node.getMethods()))
 
 $SlangFormat.formatMetaData($node.getGlobalMetaData())##
 
@@ -26,7 +27,7 @@ $SlangFormat.formatMetaData($node.getGlobalMetaData())##
     #end
 #end
 
-@record class $node.getName()
+@record class $node.getName()($argumets)
 {
 
 #**##foreach( $f in $node.getFields() )

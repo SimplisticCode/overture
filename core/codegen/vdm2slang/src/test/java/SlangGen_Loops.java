@@ -65,9 +65,9 @@ public class SlangGen_Loops
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void doWhileLoop() throws AnalysisException
+	@Test public void ForIndexCorner() throws AnalysisException
 	{
-		File file = new File("src/test/resources/Loops/doWhileLoop.vdmpp");
+		File file = new File("src/test/resources/Loops/ForIndexCorner.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -75,6 +75,29 @@ public class SlangGen_Loops
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
+
+	@Test public void ForIndexStm() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Loops/ForIndexStm.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
+	@Test public void ForIndexLoopVar() throws AnalysisException
+	{
+		File file = new File("src/test/resources/Loops/ForIndexLoopVar.vdmpp");
+
+		List<GeneratedModule> classes = generateModules(file);
+
+		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		String actualCode = classes.get(0).getContent();
+		validateCode(expectedCode, actualCode);
+	}
+
 
 	private void validateCode(String expectedCode, String actualCode)
 	{

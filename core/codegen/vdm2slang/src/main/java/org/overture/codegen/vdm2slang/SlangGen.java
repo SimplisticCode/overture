@@ -32,8 +32,8 @@ public class SlangGen extends CodeGenBase {
 
 
     public SlangGen() {
-        this.slangFormat = new SlangFormat(SLANG_TEMPLATES_ROOT_FOLDER, generator.getIRInfo());
         this.varPrefixManager = new SlangVarPrefixManager();
+        this.slangFormat = new SlangFormat(SLANG_TEMPLATES_ROOT_FOLDER, generator.getIRInfo(), varPrefixManager);
         this.transSeries = new SlangTransSeries(this);
     }
 

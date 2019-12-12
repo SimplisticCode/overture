@@ -2,25 +2,22 @@
 #set( $fromExp = $SlangFormat.formatIgnoreContext($node.getFrom()) )
 #set( $toExp = $SlangFormat.formatIgnoreContext($node.getTo()) )
 #set( $body = $SlangFormat.format($node.getBody()) )
-#set( $toVar = $SlangFormat.genForIndexToVarName() )
 #set( $bySpecified = !$SlangFormat.isNull($node.getBy()) )
-##
-long ${toVar} = ${toExp}
 ##
 #set( $condition = "" )
 #set( $step = "" )
 ##
 #if ( $bySpecified == true )
-	#set($byVar = "$SlangFormat.genForIndexByVarName()" )
-	long ${byVar} =  $SlangFormat.formatIgnoreContext($node.getBy())
-	#set( $step = "${index} += ${byVar}" )
-	#set( $condition = "${byVar} < 0 ? ${index} >= ${toVar} : ${index} <= ${toVar}")
+    #set($byVar = "$SlangFormat.genForIndexByVarName()" )
+    #set($stepSize = "$SlangFormat.formatIgnoreContext($node.getBy())")
+    #set( $step = "${index} += ${stepSize}" )
+    #set( $condition = "${toExp}")
 #else
-	#set( $condition = "${index} <= ${toVar}" )
-	#set( $step = "${index}++" )
+    #set( $condition = "${toExp}" )
+    #set( $step = "${index}++" )
 #end
 ##
 for(${index} <- ${fromExp} to ${condition} by ${step})
 {
-	$body
+    $body
 }

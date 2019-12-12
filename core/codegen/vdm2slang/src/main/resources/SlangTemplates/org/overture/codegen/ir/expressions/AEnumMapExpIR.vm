@@ -1,1 +1,1 @@
-Map.empty ++ ISZ($SlangFormat.formatArgs($node.getMembers())
+Map.empty ++ ISZ($SlangFormat.formatArgs($node.getMembers()))

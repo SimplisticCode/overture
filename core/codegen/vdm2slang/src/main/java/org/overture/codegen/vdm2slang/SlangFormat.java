@@ -29,6 +29,7 @@ import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 
 import javax.enterprise.inject.New;
 import java.io.StringWriter;
+import java.lang.invoke.MethodType;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,12 +45,14 @@ public class SlangFormat {
     private MergeVisitor codeEmitter;
     protected FuncValAssistant funcValAssist;
     private SExpIR loopVariable;
+    private SlangVarPrefixManager varPrefixManager;
 
-    public SlangFormat(String root, IRInfo info) {
+    public SlangFormat(String root, IRInfo info, SlangVarPrefixManager varPrefixManager) {
         TemplateCallable[] callables = new TemplateCallable[]{
                 new TemplateCallable(SLANG_FORMAT_KEY, this)};
         this.codeEmitter = new MergeVisitor(new TemplateManager(root), callables);
         this.info = info;
+        this.varPrefixManager = varPrefixManager;
         this.funcValAssist = null;
         this.valueSemantics = new SlangValueSemantics(this);
     }
@@ -76,6 +79,32 @@ public class SlangFormat {
         boolean isolate = precedence.mustIsolate((SExpIR) parent, exp, leftChild);
 
         return isolate ? "(" + formattedExp + ")" : formattedExp;
+    }
+
+
+    public String genForIndexToVarName()
+    {
+        return info.getTempVarNameGen().nextVarName(varPrefixManager.getIteVarPrefixes().forIndexToVar());
+    }
+
+    public String genForIndexByVarName()
+    {
+        return info.getTempVarNameGen().nextVarName(varPrefixManager.getIteVarPrefixes().forIndexByVar());
+    }
+
+
+    public String formatIgnoreContext(INode node) throws AnalysisException
+    {
+        return format(node, true);
+    }
+
+    private String format(INode node, boolean ignoreContext)
+            throws AnalysisException
+    {
+        StringWriter writer = new StringWriter();
+        node.apply(codeEmitter, writer);
+
+        return writer.toString();
     }
 
 
@@ -195,11 +224,11 @@ public class SlangFormat {
 
     public String formatNotUnary(SExpIR exp) throws AnalysisException {
         String formattedExp = format(exp);
-
         boolean doNotWrap = exp instanceof ABoolLiteralExpIR
                 || formattedExp.startsWith("(") && formattedExp.endsWith(")");
 
-        return doNotWrap ? "!" + formattedExp : "!(" + formattedExp + ")";
+        formattedExp = doNotWrap ? "!" + formattedExp : "!(" + formattedExp + ")";
+        return formattedExp.replace("\n","");
     }
 
     public String formatName(INode node) throws AnalysisException {
@@ -357,8 +386,26 @@ public class SlangFormat {
         return result;
     }
 
+    public String getConstructorArguments(List<AMethodDeclIR> methods) throws AnalysisException {
+        String args = "";
+        for (AMethodDeclIR method : methods) {
+            if(method.getIsConstructor()){
+                args = format(method.getFormalParams());
+            }
+        }
+
+        return args;
+    }
+
     public String format(INode node) throws AnalysisException {
         StringWriter writer = new StringWriter();
+
+        //A constructor is handled differently in Slang
+        if(node instanceof AMethodDeclIR){
+            AMethodDeclIR method =(AMethodDeclIR) node;
+            if(method.getIsConstructor())
+                return "";
+        }
 
         if (isCollectionType(node))
             return handleCollection(node);

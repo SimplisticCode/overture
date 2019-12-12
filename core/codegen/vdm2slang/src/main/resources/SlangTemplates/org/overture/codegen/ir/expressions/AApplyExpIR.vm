@@ -12,7 +12,7 @@
     #if ($SlangFormat.castNotNeeded($node.getType()))
         #set ( $seqRead = "Utils.get(${root},${index})" )
     #else
-        #set ( $seqRead = "(($SlangFormat.format($node.getType())) Utils.get(${root},${index}))" )
+        #set ( $seqRead = "${root}(${index})" )
     #end
 ##
     #if ($ValueSemantics.shouldClone($node))

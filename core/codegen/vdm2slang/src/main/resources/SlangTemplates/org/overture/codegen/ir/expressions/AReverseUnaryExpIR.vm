@@ -1,0 +1,7 @@
+#set( $exp = $SlangFormat.format($node.getExp()) )
+##
+#if ($SlangFormat.isStringType($node.getExp().getType()))
+	$exp.reverse()
+#else
+	ISZOps($exp).reverse
+#end

@@ -6,7 +6,7 @@ s = [1,2,3];
 
 operations 
 
-public static Run : () ==> ?
+public static Run : () ==> bool
 Run () ==
 	Test();
 		
