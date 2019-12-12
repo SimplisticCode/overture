@@ -11,13 +11,11 @@ $package
 import ${SlangFormat.getString($dep)}
 #end##
 #set( $argumets = $SlangFormat.getConstructorArguments($node.getMethods()))
-
 $SlangFormat.formatMetaData($node.getGlobalMetaData())##
 
 #foreach( $class in $node.getInnerClasses() )
     $SlangFormat.format($class)
 #end##
-
 #foreach( $typeDecl in $node.getTypeDecls() )
     #if ($SlangFormat.isEnum($typeDecl))
         $SlangFormat.formatEnum($typeDecl.getDecl())
@@ -26,10 +24,8 @@ $SlangFormat.formatMetaData($node.getGlobalMetaData())##
         $SlangFormat.format($typeDecl)
     #end
 #end
-
 @record class $node.getName()($argumets)
 {
-
 #**##foreach( $f in $node.getFields() )
 #**#$SlangFormat.format($f)
 #**##end
@@ -45,7 +41,6 @@ $SlangFormat.formatMetaData($node.getGlobalMetaData())##
 #if ($SlangFormat.isMainClass($node))
     $node.getTag().getMainMethod()
 #end
-##
 #if ($SlangFormat.genClassInvariant($node))
     $SlangFormat.format($node.getInvariant())
 #end

@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
-import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
+import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2slang.SlangGen;
+import org.overture.codegen.vdm2slang.SlangGenUtil;
 import org.overture.config.Release;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
@@ -17,7 +18,7 @@ import org.overture.typechecker.util.TypeCheckerUtil;
 import java.io.File;
 import java.util.List;
 
-public class SlangGen_Loops
+public class Slang_Specifications
 {
 
 	@BeforeAll public static void initTesting()
@@ -26,35 +27,9 @@ public class SlangGen_Loops
 		Settings.release = Release.VDM_10;
 	}
 
-	@Test public void whileLoop() throws AnalysisException
+	@Test public void RecordCreation() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/whileLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-	@Test public void forAll1() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/ForAllExpBlockStm.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		assertSingleClass(classes);
-
-		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
-		String actualCode = classes.get(0).getContent();
-
-		validateCode(expectedCode, actualCode);
-	}
-
-
-	@Test public void forAll2() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/ForAllExpInIfExp.vdmpp");
+		File file = new File("src/test/resources/Specification/RecordCreation.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
@@ -65,74 +40,45 @@ public class SlangGen_Loops
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void ForIndexCorner() throws AnalysisException
+	@Test public void RecordDecls() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForIndexCorner.vdmpp");
+		File file = new File("src/test/resources/Specification/RecordDecls.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
 
-	@Test public void ForIndexStm() throws AnalysisException
+	@Test public void RecordNesting() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForIndexStm.vdmpp");
+		File file = new File("src/test/resources/Specification/RecordNesting.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
+		assertSingleClass(classes);
 
-	@Test public void ForIndexLoopVar() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/ForIndexLoopVar.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-	@Test public void WhileStmForAllExpCond() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/WhileStmForAllExpCond.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-	@Test public void ForAllSeqLoop() throws AnalysisException
-	{
-		File file = new File("src/test/resources/Loops/ForAllSeqLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
 
 
-	@Test public void WhileStmSetSum() throws AnalysisException
+	@Test public void RecordUsage() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/WhileStmSetSum.vdmpp");
+		File file = new File("src/test/resources/Specification/RecordUsage.vdmpp");
 
 		List<GeneratedModule> classes = generateModules(file);
 
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
+		assertSingleClass(classes);
+
+		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
 		String actualCode = classes.get(0).getContent();
 		validateCode(expectedCode, actualCode);
 	}
-
-
 
 	private void validateCode(String expectedCode, String actualCode)
 	{

@@ -1,7 +1,7 @@
 #set( $exp = $SlangFormat.format($node.getExp()) )
 #set( $var = $SlangFormat.format($node.getPattern()) )
 #set( $body = $SlangFormat.format($node.getBody()) )
-for ({$var} <- ${exp}.elements)
+for (${var} <- ${exp}.elements)
 {
 	${body}
 }

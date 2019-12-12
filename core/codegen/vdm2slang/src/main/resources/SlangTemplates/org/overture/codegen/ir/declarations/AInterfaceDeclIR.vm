@@ -1,7 +1,7 @@
 #set( $package = "")
 #set( $packageName = $node.getPackage())
 #if (!$SlangFormat.isNull($packageName))
-	#set( $package = "package ${packageName};")
+	#set( $package = "package ${packageName}")
 #end
 ##
 #set( $templateTypes = "")
