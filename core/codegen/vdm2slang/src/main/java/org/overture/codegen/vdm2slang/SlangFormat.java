@@ -16,10 +16,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.*;
 import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
-import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
-import org.overture.codegen.ir.patterns.ARecordPatternIR;
-import org.overture.codegen.ir.patterns.ASeqMultipleBindIR;
-import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
+import org.overture.codegen.ir.patterns.*;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
@@ -516,7 +513,10 @@ public class SlangFormat {
             if (preConditions != null) {
                 generatedBody.append("Requires(" + NEWLINE);
                 generatedBody.append(formatCond(preConditions));
-                generatedBody.append(")" + NEWLINE);
+                generatedBody.append(")");
+                if(postConditions!= null){
+                    generatedBody.append(',');
+                }
             }
             if (postConditions != null) {
                 generatedBody.append("Ensures(" + NEWLINE);
@@ -550,6 +550,14 @@ public class SlangFormat {
         generatedBody.append(NEWLINE + "}");
 
         return generatedBody.toString();
+    }
+    public String formatTuple(ATuplePatternIR node) throws AnalysisException {
+        StringWriter arguments = new StringWriter();
+        for (SPatternIR pattern : node.getPatterns()) {
+            arguments.append(format(pattern));
+        }
+
+        return arguments.toString();
     }
 
     public String formatCond(SDeclIR cond) throws AnalysisException {

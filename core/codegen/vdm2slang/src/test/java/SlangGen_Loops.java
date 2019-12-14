@@ -13,6 +13,7 @@ import org.overture.codegen.vdm2slang.SlangGen;
 import org.overture.config.Release;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
+import testUitl.TestUtils;
 
 import java.io.File;
 import java.util.List;
@@ -20,143 +21,57 @@ import java.util.List;
 public class SlangGen_Loops
 {
 
+	TestUtils testUtils = new TestUtils();
+
 	@BeforeAll public static void initTesting()
 	{
 		Settings.dialect = Dialect.VDM_PP;
 		Settings.release = Release.VDM_10;
 	}
 
-	@Test public void whileLoop() throws AnalysisException
+	@Test public void whileLoop() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/whileLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/whileLoop.vdmpp", "Loops/ResultFiles/whileLoop.scala");
 	}
 
-	@Test public void forAll1() throws AnalysisException
+	@Test public void forAll1() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForAllExpBlockStm.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		assertSingleClass(classes);
-
-		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
-		String actualCode = classes.get(0).getContent();
-
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForAllExpBlockStm.vdmpp", "Loops/ResultFiles/ForAllExpBlockStm.scala");
 	}
 
 
-	@Test public void forAll2() throws AnalysisException
+	@Test public void forAll2() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForAllExpInIfExp.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		assertSingleClass(classes);
-
-		String expectedCode = "import org.sireum._\n\nclass A:\ndef f(x:Z):Z = return x\n\ndef A():A\n{\n\t\t\n}\n\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForAllExpInIfExp.vdmpp", "Loops/ResultFiles/ForAllExpInIfExp.scala");
 	}
 
-	@Test public void ForIndexCorner() throws AnalysisException
+	@Test public void ForIndexCorner() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForIndexCorner.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForIndexCorner.vdmpp", "Loops/ResultFiles/ForIndexCorner.scala");
 	}
 
-	@Test public void ForIndexStm() throws AnalysisException
+	@Test public void ForIndexStm() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForIndexStm.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForIndexStm.vdmpp", "Loops/ResultFiles/ForIndexStm.scala");
 	}
 
-	@Test public void ForIndexLoopVar() throws AnalysisException
+	@Test public void ForIndexLoopVar() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForIndexLoopVar.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForIndexLoopVar.vdmpp", "Loops/ResultFiles/ForIndexLoopVar.scala");
 	}
 
-	@Test public void WhileStmForAllExpCond() throws AnalysisException
+	@Test public void WhileStmForAllExpCond() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/WhileStmForAllExpCond.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/WhileStmForAllExpCond.vdmpp", "Loops/ResultFiles/WhileStmForAllExpCond.scala");
 	}
 
-	@Test public void ForAllSeqLoop() throws AnalysisException
+	@Test public void ForAllSeqLoop() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/ForAllSeqLoop.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTest("Loops/ForAllSeqLoop.vdmpp", "Loops/ResultFiles/ForAllSeqLoop.scala");
 	}
 
-
-	@Test public void WhileStmSetSum() throws AnalysisException
+	@Test public void WhileStmSetSum() throws Exception
 	{
-		File file = new File("src/test/resources/Loops/WhileStmSetSum.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
-	}
-
-
-
-	private void validateCode(String expectedCode, String actualCode)
-	{
-		Assert.assertEquals("Got unexpected code", expectedCode, actualCode);
-	}
-
-	private List<GeneratedModule> generateModules(File file)
-			throws AnalysisException
-	{
-		TypeCheckerUtil.TypeCheckResult<List<SClassDefinition>> tcResult = TypeCheckerUtil.typeCheckPp(file);
-
-		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
-		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());
-
-		SlangGen codeGen = new SlangGen();
-
-		List<INode> nodes = CodeGenBase.getNodes(tcResult.result);
-		GeneratedData data = codeGen.generate(nodes);
-
-		return data.getClasses();
-	}
-
-	private void assertSingleClass(List<GeneratedModule> classes)
-	{
-		Assert.assertEquals("Expected one class to be generated", 1, classes.size());
+		testUtils.RunTest("Loops/WhileStmSetSum.vdmpp", "Loops/ResultFiles/WhileStmSetSum.scala");
 	}
 }

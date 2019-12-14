@@ -24,9 +24,11 @@ package testUitl;
 import junit.framework.Assert;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.utils.GeneralUtils;
+import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2slang.SlangGen;
 import org.overture.typechecker.util.TypeCheckerUtil;
@@ -57,6 +59,17 @@ public class TestUtils
         validateCode(fileContent, slangCode);
     }
 
+    public void RunTestSl(String inputFileName, String ExpectedFileOutput) throws Exception {
+        File inputFile = new File("src/test/resources/" + inputFileName);
+        File resultFile = new File("src/test/resources/" + ExpectedFileOutput);
+
+        String slangCode = generateModulesSl(inputFile);
+
+        String fileContent = formatCode(GeneralUtils.readFromFile(resultFile));
+        validateCode(fileContent, slangCode);
+    }
+
+
     private String formatCode(String code) {
         Path config = Paths.get("/Users/simonthranehansen/Documents/GitHub/codegen/overture/core/codegen/vdm2slang/src/main/java/org/overture/codegen/vdm2slang/.scalafmt.conf");
         Path file = Paths.get("Main.scala");
@@ -85,6 +98,24 @@ public class TestUtils
         assertSingleClass(data);
 
         return data.get(0).getContent();
+    }
+
+
+    private String generateModulesSl(File file)
+            throws AnalysisException
+    {
+        TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
+
+        Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
+        Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());
+
+        SlangGen codeGen = new SlangGen();
+
+        List<INode> nodes = CodeGenBase.getNodes(tcResult.result);
+        GeneratedData data = codeGen.generate(nodes);
+
+
+        return data.getClasses().get(0).getContent();
     }
 
     private void assertSingleClass(List<GeneratedModule> classes)

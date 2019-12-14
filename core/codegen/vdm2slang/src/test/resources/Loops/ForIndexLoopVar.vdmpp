@@ -7,7 +7,7 @@ Run () ==
 let i = 1
 in
 (
-  for i = i to i do
+  for i = i to 10 do
     let i = i
     in
       return i;

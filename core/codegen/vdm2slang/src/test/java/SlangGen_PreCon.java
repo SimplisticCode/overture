@@ -12,12 +12,15 @@ import org.overture.codegen.vdm2slang.SlangGen;
 import org.overture.config.Release;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
+import testUitl.TestUtils;
 
 import java.io.File;
 import java.util.List;
 
 public class SlangGen_PreCon
 {
+
+	TestUtils testUtils = new TestUtils();
 
 	@BeforeAll public static void initTesting()
 	{
@@ -26,65 +29,53 @@ public class SlangGen_PreCon
 	}
 
 
-
-
-	@Test public void SimplePre() throws AnalysisException
+	@Test public void SimplePre() throws Exception
 	{
-		File file = new File("src/test/resources/Pre/simplePrePost.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "@pure def f(x : Z):Z =\nl\"\"\"{\n pre x > 4\n post x > 5\n\"\"\"}\n x + 1\n}\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTestSl("Pre/simplePrePost.vdmpp", "Pre/ResultFiles/simplePrePost.scala");
 	}
 
-	@Test public void CompoundPost() throws AnalysisException
+	@Test public void CompoundPost() throws Exception
 	{
-		File file = new File("src/test/resources/Pre/simpleCompoundPrePost.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "@pure def f(x : Z):Z =\nl\"\"\"{\n pre x > 4\n post x > 5\n\"\"\"}\n x + 1\n}\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTestSl("Pre/simpleCompoundPrePost.vdmpp", "Pre/ResultFiles/simpleCompoundPrePost.scala");
 	}
 
 
-	@Test public void explicitFunction() throws AnalysisException
+	@Test public void explicitFunction() throws Exception
 	{
-		File file = new File("src/test/resources/Pre/explicit.vdmpp");
-
-		List<GeneratedModule> classes = generateModules(file);
-
-		String expectedCode = "def less(x : Z, y : Z):B =\nx < y\n";
-		String actualCode = classes.get(0).getContent();
-		validateCode(expectedCode, actualCode);
+		testUtils.RunTestSl("Pre/explicit.vdmpp", "Pre/ResultFiles/explicit.scala");
 	}
 
-		private void validateCode(String expectedCode, String actualCode)
+	@Test public void ImplicitFunc() throws Exception
 	{
-		Assert.assertEquals("Got unexpected code", expectedCode, actualCode);
+		Settings.dialect = Dialect.VDM_PP;
+		testUtils.RunTest("Pre/ImplicitFunc.vdmpp", "Pre/ResultFiles/ImplicitFunc.scala");
 	}
 
-	private List<GeneratedModule> generateModules(File file)
-			throws AnalysisException
+	@Test public void ImplicitOp() throws Exception
 	{
-		TypeCheckerUtil.TypeCheckResult<List<AModuleModules>> tcResult = TypeCheckerUtil.typeCheckSl(file);
-
-		Assert.assertTrue("Expected no parse errors", tcResult.parserResult.errors.isEmpty());
-		Assert.assertTrue("Expected no type errors", tcResult.errors.isEmpty());
-
-		SlangGen codeGen = new SlangGen();
-
-		List<INode> nodes = CodeGenBase.getNodes(tcResult.result);
-		GeneratedData data = codeGen.generate(nodes);
-
-		return data.getClasses();
+		Settings.dialect = Dialect.VDM_PP;
+		testUtils.RunTest("Pre/ImplicitOp.vdmpp", "Pre/ResultFiles/ImplicitOp.scala");
 	}
 
-	private void assertSingleClass(List<GeneratedModule> classes)
+
+	@Test public void PrePassFuncSimple1() throws Exception
 	{
-		Assert.assertEquals("Expected one class to be generated", 1, classes.size());
+		Settings.dialect = Dialect.VDM_PP;
+		testUtils.RunTest("Pre/PrePassFuncSimple1.vdmpp", "Pre/ResultFiles/PrePassFuncSimple1.scala");
 	}
+
+	@Test public void PrePassNonStaticOp() throws Exception
+	{
+		Settings.dialect = Dialect.VDM_PP;
+		testUtils.RunTest("Pre/PrePassNonStaticOp.vdmpp", "Pre/ResultFiles/PrePassNonStaticOp.scala");
+	}
+
+
+	@Test public void PrePassOpTuplePattern() throws Exception
+	{
+		Settings.dialect = Dialect.VDM_PP;
+		testUtils.RunTest("Pre/PrePassOpTuplePattern.vdmpp", "Pre/ResultFiles/PrePassOpTuplePattern.scala");
+	}
+
+
 }
