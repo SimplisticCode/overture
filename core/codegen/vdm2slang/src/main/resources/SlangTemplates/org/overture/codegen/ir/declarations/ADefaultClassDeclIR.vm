@@ -41,7 +41,4 @@ $SlangFormat.formatMetaData($node.getGlobalMetaData())##
 #if ($SlangFormat.isMainClass($node))
     $node.getTag().getMainMethod()
 #end
-#if ($SlangFormat.genClassInvariant($node))
-    $SlangFormat.format($node.getInvariant())
-#end
 }

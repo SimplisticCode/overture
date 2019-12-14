@@ -1,5 +1,6 @@
 package org.overture.codegen.vdm2slang;
 
+import com.google.googlejavaformat.java.FormatterException;
 import org.apache.log4j.Logger;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.expressions.PExp;
@@ -17,21 +18,30 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 
 import java.io.StringWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.scalafmt.interfaces.Scalafmt;
+
 
 public class SlangGen extends CodeGenBase {
     private Logger log = Logger.getLogger(this.getClass().getName());
 
     private SlangFormat slangFormat;
     private String SLANG_TEMPLATES_ROOT_FOLDER = "SlangTemplates";
-
+    public static final String UTILS_FILE = "Utils";
+    public static final String SEQ_UTIL_FILE = "SeqUtil";
+    public static final String SET_UTIL_FILE = "SetUtil";
+    public static final String MAP_UTIL_FILE = "MapUtil";
+    public Scalafmt scalafmt;
     private SlangTransSeries transSeries;
     private SlangVarPrefixManager varPrefixManager;
 
 
     public SlangGen() {
+        this.scalafmt = Scalafmt.create(this.getClass().getClassLoader());
         this.varPrefixManager = new SlangVarPrefixManager();
         this.slangFormat = new SlangFormat(SLANG_TEMPLATES_ROOT_FOLDER, generator.getIRInfo(), varPrefixManager);
         this.transSeries = new SlangTransSeries(this);
@@ -84,30 +94,22 @@ public class SlangGen extends CodeGenBase {
         List<IRStatus<SClassDeclIR>> canBeGenerated = new LinkedList<IRStatus<SClassDeclIR>>();
 
 
-        for (IRStatus<SClassDeclIR> status : classStatuses)
-        {
-            if (status.canBeGenerated())
-            {
+        for (IRStatus<SClassDeclIR> status : classStatuses) {
+            if (status.canBeGenerated()) {
                 canBeGenerated.add(status);
-            } else
-            {
+            } else {
                 genModules.add(new GeneratedModule(status.getIrNodeName(), status.getUnsupportedInIr(), new HashSet<IrNodeInfo>(), isTestCase(status)));
             }
         }
 
-        for (DepthFirstAnalysisAdaptor trans : transSeries.getSeries())
-        {
-            for (IRStatus<SClassDeclIR> status : canBeGenerated)
-            {
-                try
-                {
-                    if (!getInfo().getDeclAssistant().isLibraryName(status.getIrNodeName()))
-                    {
+        for (DepthFirstAnalysisAdaptor trans : transSeries.getSeries()) {
+            for (IRStatus<SClassDeclIR> status : canBeGenerated) {
+                try {
+                    if (!getInfo().getDeclAssistant().isLibraryName(status.getIrNodeName())) {
                         generator.applyPartialTransformation(status, trans);
                     }
 
-                } catch (org.overture.codegen.ir.analysis.AnalysisException e)
-                {
+                } catch (org.overture.codegen.ir.analysis.AnalysisException e) {
                     log.error("Error when generating code for class "
                             + status.getIrNodeName() + ": " + e.getMessage());
                     log.error("Skipping class..");
@@ -118,10 +120,8 @@ public class SlangGen extends CodeGenBase {
 
         MergeVisitor mergeVisitor = slangFormat.getMergeVisitor();
 
-        for (IRStatus<SClassDeclIR> status : canBeGenerated)
-        {
-            try
-            {
+        for (IRStatus<SClassDeclIR> status : canBeGenerated) {
+            try {
                 genModules.add(genIrModule(mergeVisitor, status));
             } catch (org.overture.codegen.ir.analysis.AnalysisException e) {
 
@@ -194,6 +194,17 @@ public class SlangGen extends CodeGenBase {
         } else {
             return new GeneratedModule(status.getIrNodeName(), status.getUnsupportedInIr(), new HashSet<IrNodeInfo>(), isTestCase(status));
         }
+    }
+
+
+
+    @Override
+    public String formatCode(StringWriter writer) {
+        String code = writer.toString();
+        Path config = Paths.get("/Users/simonthranehansen/Documents/GitHub/codegen/overture/core/codegen/vdm2slang/src/main/java/org/overture/codegen/vdm2slang/.scalafmt.conf");
+        Path file = Paths.get("Main.scala");
+        String formattedCode = scalafmt.format(config, file, code);
+        return formattedCode;
     }
 
     public SlangVarPrefixManager getVarPrefixManager() {

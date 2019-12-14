@@ -30,23 +30,39 @@ import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2slang.SlangGen;
 import org.overture.typechecker.util.TypeCheckerUtil;
+import org.scalafmt.interfaces.Scalafmt;
 
 import java.io.File;
+import java.io.StringWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class TestUtils
 {
 
+    private final Scalafmt scalafmt;
+
+    public TestUtils(){
+        this.scalafmt = Scalafmt.create(this.getClass().getClassLoader());
+    }
+
     public void RunTest(String inputFileName, String ExpectedFileOutput) throws Exception {
         File inputFile = new File("src/test/resources/" + inputFileName);
-        File resultFile = new File("src/test/resources/ResultFiles/" + ExpectedFileOutput);
+        File resultFile = new File("src/test/resources/" + ExpectedFileOutput);
 
         String slangCode = generateModules(inputFile);
 
-        String fileContent = GeneralUtils.readFromFile(resultFile);
+        String fileContent = formatCode(GeneralUtils.readFromFile(resultFile));
         validateCode(fileContent, slangCode);
     }
 
+    private String formatCode(String code) {
+        Path config = Paths.get("/Users/simonthranehansen/Documents/GitHub/codegen/overture/core/codegen/vdm2slang/src/main/java/org/overture/codegen/vdm2slang/.scalafmt.conf");
+        Path file = Paths.get("Main.scala");
+        String formattedCode = scalafmt.format(config, file, code);
+        return formattedCode;
+    }
 
     private void validateCode(String expectedCode, String actualCode)
     {

@@ -1,4 +1,4 @@
 #set( $set = $SlangFormat.formatCollection($node.getBindings()))
 #set( $predVar = $SlangFormat.formatPredicateVar($node.getBindings()))
 ##
-Map.empty ++ (${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate())).map(${predVar} => $SlangFormat.formatMapping($node.getFirst())))).elements
+Map.empty ++ (${set}.elements.filter(${predVar} => $SlangFormat.format($node.getPredicate())).map(${predVar} => $SlangFormat.formatMapping($node.getFirst()))).elements
