@@ -1,4 +1,1 @@
-#set( $set = $SlangFormat.formatCollection($node.getBindList()))
-#set( $predVar = $SlangFormat.formatPredicateVar($node.getBindList()))
-##
-Exists(${set}.elements)(${predVar} => $SlangFormat.format($node.getPredicate()))
+$SlangFormat.formatQuantifier("Exists", $node.getBindList(), $node.getPredicate())

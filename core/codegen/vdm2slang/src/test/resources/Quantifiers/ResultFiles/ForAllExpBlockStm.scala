@@ -7,8 +7,8 @@ import org.sireum._
     return Test()
   }
   def Test(): B = {
-    var a: B =
-      All(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)).elements)(x => x + y > 3)
+    var a: B = All(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)))(x =>
+      All(SetUtil.CreateSetFromSeq(ISZ(1, 2, 3)))(y => x + y > 3))
     return a
 
   }

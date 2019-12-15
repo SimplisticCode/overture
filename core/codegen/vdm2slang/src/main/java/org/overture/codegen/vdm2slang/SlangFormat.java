@@ -18,6 +18,7 @@ import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.patterns.*;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -79,25 +80,21 @@ public class SlangFormat {
     }
 
 
-    public String genForIndexToVarName()
-    {
+    public String genForIndexToVarName() {
         return info.getTempVarNameGen().nextVarName(varPrefixManager.getIteVarPrefixes().forIndexToVar());
     }
 
-    public String genForIndexByVarName()
-    {
+    public String genForIndexByVarName() {
         return info.getTempVarNameGen().nextVarName(varPrefixManager.getIteVarPrefixes().forIndexByVar());
     }
 
 
-    public String formatIgnoreContext(INode node) throws AnalysisException
-    {
+    public String formatIgnoreContext(INode node) throws AnalysisException {
         return format(node, true);
     }
 
     private String format(INode node, boolean ignoreContext)
-            throws AnalysisException
-    {
+            throws AnalysisException {
         StringWriter writer = new StringWriter();
         node.apply(codeEmitter, writer);
 
@@ -112,7 +109,7 @@ public class SlangFormat {
     //Does only handle one binding
     public String formatCollection(List<SMultipleBindIR> bindings) throws Exception {
         StringBuilder setComp = new StringBuilder();
-        if(bindings.size() > 1)
+        if (bindings.size() > 1)
             throw new Exception("Multiple binding are not handled by translator");
         for (SMultipleBindIR bind : bindings) {
             if (bind instanceof ASetMultipleBindIR) {
@@ -225,7 +222,7 @@ public class SlangFormat {
                 || formattedExp.startsWith("(") && formattedExp.endsWith(")");
 
         formattedExp = doNotWrap ? "!" + formattedExp : "!(" + formattedExp + ")";
-        return formattedExp.replace("\n","");
+        return formattedExp.replace("\n", "");
     }
 
     public String formatName(INode node) throws AnalysisException {
@@ -386,7 +383,7 @@ public class SlangFormat {
     public String getConstructorArguments(List<AMethodDeclIR> methods) throws AnalysisException {
         String args = "";
         for (AMethodDeclIR method : methods) {
-            if(method.getIsConstructor()){
+            if (method.getIsConstructor()) {
                 args = format(method.getFormalParams());
             }
         }
@@ -398,9 +395,9 @@ public class SlangFormat {
         StringWriter writer = new StringWriter();
 
         //A constructor is handled differently in Slang
-        if(node instanceof AMethodDeclIR){
-            AMethodDeclIR method =(AMethodDeclIR) node;
-            if(method.getIsConstructor())
+        if (node instanceof AMethodDeclIR) {
+            AMethodDeclIR method = (AMethodDeclIR) node;
+            if (method.getIsConstructor())
                 return "";
         }
 
@@ -500,8 +497,8 @@ public class SlangFormat {
         return generatedBody.toString();
     }
 
-    public String genClassInvariant(ADefaultClassDeclIR node){
-        if(node.getInvariant() == null){
+    public String genClassInvariant(ADefaultClassDeclIR node) {
+        if (node.getInvariant() == null) {
             return "";
         }
         return "in";
@@ -514,7 +511,7 @@ public class SlangFormat {
                 generatedBody.append("Requires(" + NEWLINE);
                 generatedBody.append(formatCond(preConditions));
                 generatedBody.append(")");
-                if(postConditions!= null){
+                if (postConditions != null) {
                     generatedBody.append(',');
                 }
             }
@@ -551,6 +548,7 @@ public class SlangFormat {
 
         return generatedBody.toString();
     }
+
     public String formatTuple(ATuplePatternIR node) throws AnalysisException {
         StringWriter arguments = new StringWriter();
         for (SPatternIR pattern : node.getPatterns()) {
@@ -560,14 +558,35 @@ public class SlangFormat {
         return arguments.toString();
     }
 
+    public String formatQuantifier(String quantifierType, List<SMultipleBindIR> bindings, SExpIR predicate) throws Exception {
+        StringWriter quantifier = new StringWriter();
+        int numbersOfBindings = 0;
+        for (SMultipleBindIR binding : bindings) {
+            for (SPatternIR identifier : binding.getPatterns()) {
+                quantifier.append(quantifierType);
+                quantifier.append("(");
+                quantifier.append(formatCollection(bindings));
+                quantifier.append(")(");
+                quantifier.append(format(identifier));
+                quantifier.append("=> ");
+                numbersOfBindings++;
+            }
+        }
+        quantifier.append(format(predicate, false));
+        for (int i = 0; i < numbersOfBindings; i++) {
+            quantifier.append(")");
+        }
+        return quantifier.toString();
+    }
+
     public String formatCond(SDeclIR cond) throws AnalysisException {
         String conditionString = "";
-        if(cond instanceof AMethodDeclIR){
+        if (cond instanceof AMethodDeclIR) {
             SStmIR exp = ((AMethodDeclIR) cond).getBody();
             //A pre/post condition should not contain a return
             conditionString = format(exp);
         }
-        if(cond instanceof AFuncDeclIR){
+        if (cond instanceof AFuncDeclIR) {
             SExpIR exp = ((AFuncDeclIR) cond).getBody();
             //A pre/post condition should not contain a return
             conditionString = format(exp);

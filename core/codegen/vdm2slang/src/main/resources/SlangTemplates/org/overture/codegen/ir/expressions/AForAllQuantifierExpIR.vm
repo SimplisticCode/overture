@@ -1,4 +1,1 @@
-#set( $set = $SlangFormat.formatCollection($node.getBindList()))
-#set( $predVar = $SlangFormat.formatPredicateVar($node.getBindList()))
-##
-All(${set}.elements)(${predVar} => $SlangFormat.format($node.getPredicate()))
+$SlangFormat.formatQuantifier("All", $node.getBindList(), $node.getPredicate())

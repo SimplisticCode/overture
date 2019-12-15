@@ -1,7 +1,7 @@
 #if ( $SlangFormat.isNull($node.getExp()) )
-#**#return
+    return
 #elseif ( $SlangFormat.isVoidType($node.getExp().getType()) )
-#**#return $SlangFormat.format($node.getExp())
+    return $SlangFormat.format($node.getExp())
 #else
-#**#return $SlangFormat.format($node.getExp())
+    return $SlangFormat.format($node.getExp())
 #end
