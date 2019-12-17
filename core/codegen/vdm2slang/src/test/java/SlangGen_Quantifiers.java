@@ -28,6 +28,24 @@ public class SlangGen_Quantifiers {
     }
 
     @Test
+    public void ExistsExpReturned() throws Exception {
+        testUtils.RunTest("Quantifiers/ExistsExpReturned.vdmpp", "Quantifiers/ResultFiles/ExistsExpReturned.scala");
+    }
+
+
+    @Test
+    public void ExistsRemoveAllMultipleSetBinds() throws Exception {
+        testUtils.RunTest("Quantifiers/ExistsRemoveAllMultipleSetBinds.vdmpp", "Quantifiers/ResultFiles/ExistsRemoveAllMultipleSetBinds.scala");
+    }
+
+    @Test
+    public void ExistsExpSeveralMultipleSetBindsCond1() throws Exception {
+        testUtils.RunTest("Quantifiers/ExistsExpSeveralMultipleSetBindsCond1.vdmpp", "Quantifiers/ResultFiles/ExistsExpSeveralMultipleSetBindsCond1.scala");
+    }
+
+
+
+    @Test
     public void Exists() throws Exception {
         testUtils.RunTest("Quantifiers/ExistsSeqBind.vdmpp", "Quantifiers/ResultFiles/ExistsSeqBind.scala");
     }

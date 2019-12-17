@@ -36,8 +36,8 @@ functions
   pre peri in set dom plant.schedule;
 
   ExpertIsOnDuty: Expert * Plant -> set of Period
-  ExpertIsOnDuty(ex,mk_Plant(sch,-)) ==
-    {peri | peri in set dom sch & ex in set sch(peri)};
+  ExpertIsOnDuty(ex, plant) ==
+    {peri | peri in set dom plant.schedule & ex in set plant.schedule(peri)};
 
   ExpertToPage(a:Alarm,peri:Period,plant:Plant) r: Expert
   pre peri in set dom plant.schedule and

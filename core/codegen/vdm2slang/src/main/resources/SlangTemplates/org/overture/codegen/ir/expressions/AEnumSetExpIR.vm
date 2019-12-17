@@ -1,1 +1,1 @@
-SetUtil.CreateSetFromSeq(ISZ($SlangFormat.formatArgs($node.getMembers())))
+Set.empty ++ ISZ($SlangFormat.formatArgs($node.getMembers()))

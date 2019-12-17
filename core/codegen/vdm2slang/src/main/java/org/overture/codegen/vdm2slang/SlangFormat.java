@@ -3,9 +3,11 @@ package org.overture.codegen.vdm2slang;
 import org.apache.log4j.Logger;
 import org.overture.ast.definitions.AStateDefinition;
 import org.overture.ast.expressions.AMapletExp;
+import org.overture.ast.expressions.AQuoteLiteralExp;
 import org.overture.ast.expressions.AStringLiteralExp;
 import org.overture.ast.modules.AModuleModules;
 import org.overture.ast.patterns.ASetMultipleBind;
+import org.overture.ast.statements.AElseIfStm;
 import org.overture.ast.types.ARecordInvariantType;
 import org.overture.ast.types.AUnionType;
 import org.overture.ast.util.ClonableString;
@@ -17,8 +19,7 @@ import org.overture.codegen.ir.declarations.*;
 import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.patterns.*;
-import org.overture.codegen.ir.statements.ABlockStmIR;
-import org.overture.codegen.ir.statements.AExpStmIR;
+import org.overture.codegen.ir.statements.*;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -28,8 +29,10 @@ import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import javax.enterprise.inject.New;
 import java.io.StringWriter;
 import java.lang.invoke.MethodType;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 public class SlangFormat {
@@ -129,10 +132,6 @@ public class SlangFormat {
         map.append(format(node.getRight()));
 
         return map.toString();
-    }
-
-    public String formatForAll(AForAllQuantifierExpIR node) {
-        return "";
     }
 
     //Ask Peter
@@ -391,8 +390,46 @@ public class SlangFormat {
         return args;
     }
 
+    public String formatQuoteLiteral(AQuoteLiteralExpIR node) throws AnalysisException {
+        String quoteName = "";
+        ListIterator iterator = info.getClasses().listIterator();
+        while (iterator.hasNext() && quoteName.isEmpty()) {
+            Object classType = iterator.next();
+            if (classType instanceof ADefaultClassDeclIR) {
+                ADefaultClassDeclIR defaultClassDeclIR = (ADefaultClassDeclIR) classType;
+                for (ATypeDeclIR typedeclaration : defaultClassDeclIR.getTypeDecls()) {
+                    if (typedeclaration.getDecl() instanceof ANamedTypeDeclIR) {
+                        ANamedTypeDeclIR namedTypeDeclIR = (ANamedTypeDeclIR) typedeclaration.getDecl();
+                        if (namedTypeDeclIR.getType() instanceof AUnionTypeIR) {
+                            AUnionTypeIR union = (AUnionTypeIR) namedTypeDeclIR.getType();
+                            ListIterator unionIterator = union.getTypes().listIterator();
+                            while (unionIterator.hasNext()) {
+                                AQuoteTypeIR quote = (AQuoteTypeIR) unionIterator.next();
+                                if (quote.getValue().contains(node.getValue())) {
+                                    quoteName = namedTypeDeclIR.getName().toString();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return quoteName + "." + node.getValue();
+
+    }
+
     public String format(INode node) throws AnalysisException {
         StringWriter writer = new StringWriter();
+
+        if (node instanceof AIdentifierVarExpIR) {
+            AIdentifierVarExpIR varExpIR = (AIdentifierVarExpIR) node;
+            if (varExpIR.getName().startsWith("_")) {
+                varExpIR.setName(varExpIR.getName().replace("_", "IN("));
+                varExpIR.setName(varExpIR.getName() + ")");
+            }
+        }
 
         //A constructor is handled differently in Slang
         if (node instanceof AMethodDeclIR) {
@@ -510,10 +547,13 @@ public class SlangFormat {
             if (preConditions != null) {
                 generatedBody.append("Requires(" + NEWLINE);
                 generatedBody.append(formatCond(preConditions));
-                generatedBody.append(")");
-                if (postConditions != null) {
-                    generatedBody.append(',');
-                }
+                generatedBody.append("),");
+
+            }
+            generatedBody.append(createModifyClause(preConditions.parent()));
+            generatedBody.append(")");
+            if (postConditions != null) {
+                generatedBody.append(",");
             }
             if (postConditions != null) {
                 generatedBody.append("Ensures(" + NEWLINE);
@@ -523,6 +563,50 @@ public class SlangFormat {
             generatedBody.append(")" + NEWLINE);
         }
 
+    }
+
+    private String createModifyClause(INode node) throws AnalysisException {
+        StringWriter clause = new StringWriter();
+        clause.append("Modifies(");
+        if (node instanceof AMethodDeclIR) {
+            SStmIR body = ((AMethodDeclIR) node).getBody();
+            Collection<Object> values = body.getChildren(true).values();
+
+            for (Object val : values) {
+                GetModifyVariable(clause, val);
+            }
+
+        }
+        if (node instanceof AFuncDeclIR) {
+            //No change of state in a function
+        }
+        String clauseString = clause.toString();
+
+        return clauseString.replaceAll(",$", ")");
+    }
+
+    private void GetModifyVariable(StringWriter clause, Object val) throws AnalysisException {
+        if (val instanceof AAssignToExpStmIR) {
+            AAssignToExpStmIR exp = (AAssignToExpStmIR) val;
+            SExpIR lhs = exp.getTarget();
+            if (!((AIdentifierVarExpIR) exp.getTarget()).getIsLocal()) {
+                clause.append(format(lhs, false));
+                clause.append(",");
+            }
+        }
+        if (val instanceof NodeList) {
+            NodeList exp = (NodeList) val;
+            ListIterator iterator = exp.listIterator();
+            while (iterator.hasNext()) {
+                Object node = iterator.next();
+                if (node instanceof AElseIfStmIR) {
+                    AElseIfStmIR elseIfStm = (AElseIfStmIR) node;
+                    GetModifyVariable(clause, elseIfStm.getThenStm());
+                } else {
+                    GetModifyVariable(clause, iterator.next());
+                }
+            }
+        }
     }
 
 
@@ -565,7 +649,8 @@ public class SlangFormat {
             for (SPatternIR identifier : binding.getPatterns()) {
                 quantifier.append(quantifierType);
                 quantifier.append("(");
-                quantifier.append(formatCollection(bindings));
+                quantifier.append(formatCollection(binding));
+                quantifier.append(".elements");
                 quantifier.append(")(");
                 quantifier.append(format(identifier));
                 quantifier.append("=> ");
@@ -577,6 +662,15 @@ public class SlangFormat {
             quantifier.append(")");
         }
         return quantifier.toString();
+    }
+
+    private String formatCollection(SMultipleBindIR binding) throws AnalysisException {
+        if (binding instanceof ASetMultipleBindIR) {
+            return format(((ASetMultipleBindIR) binding).getSet());
+        } else if (binding instanceof ASeqMultipleBindIR) {
+            return format(((ASeqMultipleBindIR) binding).getSeq());
+        }
+        return "";
     }
 
     public String formatCond(SDeclIR cond) throws AnalysisException {
